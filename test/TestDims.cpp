@@ -38,3 +38,11 @@ TEST(TestDims, Test4) {
     ASSERT_EQ(dims.dim[0_c], 1);
     ASSERT_EQ(dims.dim[1_c], 2);
 }
+
+TEST(TestDims, Test5) {
+    auto constexpr dims1 = Dims(1, 2, 3);
+    auto constexpr dims2 = Dims(dims1);
+
+    static_assert(dims1.dim[0_c] == dims2.dim[0_c]);
+    static_assert(dims1.dim[1_c] == dims2.dim[1_c]);
+}
