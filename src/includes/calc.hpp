@@ -1,9 +1,4 @@
-//
-// Created by chenlong on 2020/2/23.
-//
-
-#ifndef DEMO2_CALC_HPP
-#define DEMO2_CALC_HPP
+#pragma once
 
 #include <boost/hana.hpp>
 #include <iostream>
@@ -17,5 +12,3 @@ public:
     }
 };
 
-
-#endif //DEMO2_CALC_HPP
