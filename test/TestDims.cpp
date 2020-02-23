@@ -13,28 +13,28 @@ TEST(TestDims, Test1) {
 TEST(TestDims, Test2) {
     auto dims = Dims(1, 2, 3);
 
-    ASSERT_EQ(dims.data[0_c], 1);
-    ASSERT_EQ(dims.data[1_c], 2);
+    ASSERT_EQ(dims.dim[0_c], 1);
+    ASSERT_EQ(dims.dim[1_c], 2);
 }
 
 TEST(TestDims, Test3) {
     // Add constexpr
     auto constexpr dims = Dims(1, 2, 3);
 
-    static_assert(dims.data[0_c] == 1);
-    static_assert(dims.data[1_c] == 2);
+    static_assert(dims.dim[0_c] == 1);
+    static_assert(dims.dim[1_c] == 2);
 
-    ASSERT_EQ(dims.data[0_c], 1);
-    ASSERT_EQ(dims.data[1_c], 2);
+    ASSERT_EQ(dims.dim[0_c], 1);
+    ASSERT_EQ(dims.dim[1_c], 2);
 }
 
 TEST(TestDims, Test4) {
     // No constexpr
     auto dims = Dims(1_c, 2_c, 3_c);
 
-    static_assert(dims.data[0_c] == 1_c);
-    static_assert(dims.data[1_c] == 2_c);
+    static_assert(dims.dim[0_c] == 1_c);
+    static_assert(dims.dim[1_c] == 2_c);
 
-    ASSERT_EQ(dims.data[0_c], 1);
-    ASSERT_EQ(dims.data[1_c], 2);
+    ASSERT_EQ(dims.dim[0_c], 1);
+    ASSERT_EQ(dims.dim[1_c], 2);
 }
