@@ -2,7 +2,7 @@ project(test)
 add_subdirectory(googletest-release-1.10.0)
 include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
 
-# adding the Google_Tests_run target
-add_executable(Google_Tests_run test.cpp)
+# adding the run_tests target
+add_executable(run_tests test.cpp TestDims.cpp)
 
-target_link_libraries(Google_Tests_run gtest gtest_main)
+target_link_libraries(run_tests gtest gtest_main)
