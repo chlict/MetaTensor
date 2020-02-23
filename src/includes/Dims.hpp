@@ -8,7 +8,7 @@ struct Dims {
 
     constexpr explicit Dims(T... t) : dim(t...) {}
 
-    constexpr Dims(Dims &&other) noexcept : dim(other.dim) {}
+    constexpr Dims(Dims &&other) noexcept : dim(std::forward<Dims>(other).dim) {}
 
     constexpr Dims(const Dims &other) : dim(other.dim) {}
 
