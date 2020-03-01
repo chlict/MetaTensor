@@ -2,9 +2,9 @@
 
 #include "Dims.hpp"
 
-// PShape represents physical shape, usually a Dims type
-// Stride represents a type holding each dim's stride
-// innermost dim positioned in the rightmost element
+// PShape represents physical shape, usually a Dims type.
+// Stride represents a type holding each dim's stride.
+// innermost dim positioned in the rightmost element.
 template <typename PShape, typename Stride>
 struct Layout {
     PShape pShape;
@@ -20,6 +20,9 @@ struct Layout {
             stride(std::forward<Stride>(stride)) {}
 
     // layout.pShape() cannot be used in constexpr but layout.mPShape can (but why?). So we delete the getters
+    constexpr PShape getPShape() const {
+        return pShape;
+    }
 //    constexpr auto pShape() const {
 //        return pShape;
 //    }
