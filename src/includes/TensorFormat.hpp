@@ -2,54 +2,71 @@
 
 #include "Literals.hpp"
 #include "TensorLayout.hpp"
+#include <type_traits>
 
-enum Format {
-    MatRowMajor,    // row major stored matrix
-    MatColMajor,    // column major stored matrix
-    Customized
+enum Formats {
+    MATRIX_ROW_MAJOR,    // row major stored matrix
+    MATRIX_COL_MAJOR,    // column major stored matrix
+    CUSTOMIZED
 };
-
-struct AutoLayout {};
 
 struct TensorFormatHandle {
 };
 
-// View represents a logical shape_. E.g. a fractal tensor may have a view of Dim2(width, height)
-// like a matrix, but the underlying layout has a Dim4 shape.
-template<Format Tag, typename View, typename Layout>
+// View represents a logical shape. E.g. a fractal tensor may have a view of Dim2(width, height) like a matrix
+// but the underlying layout has a Dim4 shape.
+template<typename View, typename Layout>
 struct TensorFormat : public TensorFormatHandle {
-    View view_;
-    Layout layout_;
+    View view;
+    Layout layout;
+    Formats tag;
 
-    constexpr TensorFormat(View view, Layout layout) : view_(view), layout_(layout) {}
+    constexpr TensorFormat(Formats tag, View view, Layout layout) :
+        view(view), layout(layout), tag(tag) {}
 
     constexpr TensorFormat(TensorFormat const &other) noexcept :
-        view_(other.view_),
-        layout_(other.layout_) {}
+            view(other.view),
+            layout(other.layout) {}
 
     constexpr TensorFormat(TensorFormat &&other) noexcept :
-        view_(std::forward<TensorFormat>(other.view_),
-        layout_(std::forward<TensorFormat>(other.layout_))) {}
+            view(std::forward<TensorFormat>(other.view),
+                 layout(std::forward<TensorFormat>(other.layout))) {}
 
-    constexpr auto get_view() const {
-        return view_;
+    constexpr auto getView() const {
+        return view;
     }
 
-    constexpr auto get_layout() const {
-        return layout_;
+    constexpr auto getLayout() const {
+        return layout;
     }
+
+    constexpr auto getTag() const {
+        return tag;
+    }
+
 };
 
-template<Format tag, typename View, typename Layout = AutoLayout>
-constexpr auto MakeFormat(View view, Layout layout = Layout()) {
-    if constexpr (tag == Format::MatRowMajor) {
-        static_assert(std::is_same_v<Layout, AutoLayout>);
-        auto shape = Dims(view.dim[0_c], view.dim[1_c]);
-        auto stride = Dims(view.dim[0_c] * view.dim[1_c], 1_c);
-        auto real_layout = TensorLayout(shape, stride);
-        return TensorFormat<Format::MatRowMajor, View, decltype(real_layout)>(view, real_layout);
-    } else if constexpr (tag == Format::Customized) {
-        return TensorFormat<tag, View, Layout>(view, layout);
-    }
+// Must be specialized before use
+template <Formats tag>
+struct AutoLayout {
+    template <typename View>
+    constexpr auto operator()(View &&view) const = delete;
+};
+
+template <Formats tag>
+AutoLayout<tag> auto_layout;
+
+template<Formats tag, typename View, typename LayoutProvider = AutoLayout<tag>>
+constexpr auto make_format(View view, LayoutProvider layout_provider = auto_layout<tag>) {
+    auto layout = layout_provider(view);
+    return TensorFormat<View, decltype(layout)>(tag, view, layout);
 }
+
+//template<Formats tag, typename Dim0, typename Dim1, typename LayoutProvider = AutoLayout<tag>
+//        typename t1 = std::enable_if_t<std::is_integral<Dim0>::value>>
+//constexpr auto make_format(Dim0 dim0, Dim1 dim1, LayoutProvider layout_provider = auto_layout<tag>) {
+//    return make_format<tag>(Dims(dim0, dim1), layout_provider);
+//}
+
+#include "MatrixFormats.hpp"
 

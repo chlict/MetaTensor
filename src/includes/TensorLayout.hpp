@@ -3,31 +3,31 @@
 #include "Dims.hpp"
 
 // Shape represents physical shape, usually has a type of Dims.
-// Stride represents a type holding each dim's stride.
+// Strides represents a type holding each dim's stride.
 // Innermost dim positioned in the rightmost element.
-template <typename Shape, typename Stride>
+template <typename Shape, typename Strides>
 struct TensorLayout {
-    Shape shape_;
+    Shape shape;
 
-    Stride stride_;
+    Strides strides;
 
-    constexpr TensorLayout(const Shape &shape, const Stride &stride) :
-            shape_(shape),
-            stride_(stride) {}
+    constexpr TensorLayout(const Shape &shape, const Strides &stride) :
+            shape(shape),
+            strides(stride) {}
 
-    constexpr TensorLayout(Shape &&shape, Stride &&stride) noexcept :
-            shape_(std::forward<Shape>(shape)),
-            stride_(std::forward<Stride>(stride)) {}
+    constexpr TensorLayout(Shape &&shape, Strides &&stride) noexcept :
+            shape(std::forward<Shape>(shape)),
+            strides(std::forward<Strides>(stride)) {}
 
-    // If 'Shape' is a 'Dims' type which consists of a hana::tuple, layout.shape() cannot be used in constexpr
-    // but layout.shape_ can (clang++ fixes this in clang11).
-    // However, we can use 'shape = layout.shape()' outside of a constant-evaluation context and use the 'shape'
+    // If 'Shape' is a 'Dims' type which consists of a hana::tuple, layout.getShape() cannot be used in constexpr
+    // but layout.shape can (clang++ fixes this in clang11).
+    // However, we can use 'shape = layout.getShape()' outside of a constant-evaluation context and use the 'shape'
     // in constant-evaluation context.
-    constexpr auto shape() const {
-        return shape_;
+    constexpr auto getShape() const {
+        return shape;
     }
 
-    constexpr auto stride() const {
-        return stride_;
+    constexpr auto getStrides() const {
+        return strides;
     }
 };
