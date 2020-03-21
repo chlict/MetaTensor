@@ -56,9 +56,12 @@ struct AutoLayout {
 template <Formats tag>
 AutoLayout<tag> auto_layout;
 
+#include "MatrixFormats.hpp"
+
 template<Formats tag, typename View, typename LayoutProvider = AutoLayout<tag>>
+        // TODO: View &&view
 constexpr auto make_format(View view, LayoutProvider layout_provider = auto_layout<tag>) {
-    auto layout = layout_provider(view);
+    auto layout = layout_provider(static_cast<View &&>(view));
     return TensorFormat<View, decltype(layout)>(tag, view, layout);
 }
 
@@ -68,5 +71,4 @@ constexpr auto make_format(View view, LayoutProvider layout_provider = auto_layo
 //    return make_format<tag>(Dims(dim0, dim1), layout_provider);
 //}
 
-#include "MatrixFormats.hpp"
 

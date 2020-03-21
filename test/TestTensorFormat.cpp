@@ -41,11 +41,10 @@ TEST(TestTensorFormat, TestColMajor) {
     auto stride = format.getLayout().getStrides();
 
     static_assert(shape.dim[0_c] == 2_c && shape.dim[1_c] == 4_c);
-    static_assert(stride.dim[0_c] == 2_c && stride.dim[1_c] == 1_c);
+    static_assert(stride.dim[0_c] == 4_c && stride.dim[1_c] == 1_c);
 }
 
 TEST(TestTensorFormat, test4) {
     auto x = boost::hana::mult(4, 2);
-    printf("x = %d\n", (int)x);
     auto y = boost::hana::lift<boost::hana::tuple_tag>('x');
 }

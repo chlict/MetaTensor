@@ -10,9 +10,19 @@ struct AutoLayout<MATRIX_ROW_MAJOR> {
     template <typename View>
     constexpr auto operator()(View&& view) const {
         static_assert(std::remove_reference<View>::type::nDims == 2, "Matrix expected");
-        auto shape = Dims(view.dim[0_c], view.dim[1_c]);
-        auto strides = Dims(view.dim[1_c], 1_c);
+        auto shape = view_to_shape(view);
+        auto strides = shape_to_strides(shape);
         return TensorLayout(shape, strides);
+    }
+
+    template <typename View>
+    constexpr auto view_to_shape(View &&view) const {
+        return Dims(view.dim[0_c], view.dim[1_c]);  // same as view
+    }
+
+    template <typename Shape>
+    constexpr auto shape_to_strides(Shape &&shape) const {
+        return Dims(shape.dim[1_c], 1_c);
     }
 };
 
@@ -27,8 +37,18 @@ struct AutoLayout<MATRIX_COL_MAJOR> {
     template <typename View>
     constexpr auto operator()(View&& view) const {
         static_assert(std::remove_reference<View>::type::nDims == 2, "Matrix expected");
-        auto shape = Dims(view.dim[1_c], view.dim[0_c]);
-        auto strides = Dims(view.dim[1_c], 1_c);
+        auto shape = view_to_shape(view);
+        auto strides = shape_to_strides(shape);
         return TensorLayout(shape, strides);
+    }
+
+    template <typename View>
+    constexpr auto view_to_shape(View &&view) const {
+        return Dims(view.dim[1_c], view.dim[0_c]);  // same as view
+    }
+
+    template <typename Shape>
+    constexpr auto shape_to_strides(Shape &&shape) const {
+        return Dims(shape.dim[1_c], 1_c);
     }
 };
