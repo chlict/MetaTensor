@@ -1,5 +1,6 @@
 #include "gtest/gtest.h"
 #include "TensorFormat.hpp"
+#include "MatrixFormats.hpp"
 #include <boost/hana/mult.hpp>
 
 TEST(TestTensorFormat, Test1) {
@@ -7,7 +8,7 @@ TEST(TestTensorFormat, Test1) {
     auto layout_function = [](auto &&view) {
         return TensorLayout(Dims(4_c, 2_c), Dims(2_c, 1_c));
     };
-    auto format = make_format<CUSTOMIZED>(view, layout_function);
+    auto format = make_format(view, layout_function);
     static_assert(format.view.dim == view.dim);
     static_assert(format.layout.shape.dim[0_c] == 4_c);
 
@@ -22,13 +23,13 @@ TEST(TestTensorFormat, Test2) {
     auto layout_function = [](auto &&view) {
         return TensorLayout(Dims(4, 2), Dims(2_c, 1_c));
     };
-    auto format = make_format<CUSTOMIZED>(view, layout_function);
+    auto format = make_format(view, layout_function);
     assert(format.view.dim == view.dim);
     assert(format.layout.shape.dim[0_c] == 4);
 }
 
 TEST(TestTensorFormat, TestRowMajor) {
-    auto format = make_format<Formats::MATRIX_ROW_MAJOR>(Dims(4_c, 2_c));
+    auto format = make_format(Dims(4_c, 2_c), RowMajorLayout());
     auto shape = format.getLayout().getShape();
     auto stride = format.getLayout().getStrides();
 
@@ -36,13 +37,14 @@ TEST(TestTensorFormat, TestRowMajor) {
 }
 
 TEST(TestTensorFormat, TestColMajor) {
-    auto format = make_format<MATRIX_COL_MAJOR>(Dims(4_c, 2_c));
+    auto format = make_format(Dims(4_c, 2_c), ColMajorLayout());
     auto shape = format.getLayout().getShape();
     auto stride = format.getLayout().getStrides();
 
     static_assert(shape.dim[0_c] == 2_c && shape.dim[1_c] == 4_c);
     static_assert(stride.dim[0_c] == 4_c && stride.dim[1_c] == 1_c);
 }
+
 
 TEST(TestTensorFormat, test4) {
     auto x = boost::hana::mult(4, 2);
