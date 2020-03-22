@@ -4,7 +4,7 @@
 
 // Shape represents physical shape, usually has a type of Dims.
 // Strides represents a type holding each dim's stride.
-// Innermost dim positioned in the rightmost element.
+// Innermost dim positioned in leftmost.
 template <typename Shape, typename Strides>
 struct TensorLayout {
     Shape shape;

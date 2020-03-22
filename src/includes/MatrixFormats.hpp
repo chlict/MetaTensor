@@ -5,8 +5,8 @@
 struct RowMajorLayout : AbstractLayoutProvider<RowMajorLayout> {
     // Given a 2 x 4 matrix:
     // view:           [rows:  2, cols:  4]
-    // layout shape:   [outer: 2, inner: 4]
-    // layout strides: [outer: 4, inner: 1]
+    // layout shape:   [inner: 4, outer: 2]
+    // layout strides: [inner: 1, outer: 4]
     template <typename View>
     constexpr auto operator()(View&& view) const {
         static_assert(std::remove_reference_t<View>::nDims == 2, "Matrix expected");
@@ -17,13 +17,14 @@ struct RowMajorLayout : AbstractLayoutProvider<RowMajorLayout> {
 
     template <typename View>
     constexpr auto view_to_shape(View &&view) const {
-        static_assert(std::remove_reference<View>::type::nDims == 2, "Matrix expected");
-        return Dims(view.dim[0_c], view.dim[1_c]);  // same as view
+        static_assert(std::remove_reference_t<View>::nDims == 2, "Matrix expected");
+        return Dims(view.dim[1_c], view.dim[0_c]);
     }
 
     template <typename Shape>
     constexpr auto shape_to_strides(Shape &&shape) const {
-        return Dims(shape.dim[1_c], 1_c);
+        static_assert(std::remove_reference_t<Shape>::nDims == 2, "Matrix expected");
+        return Dims(1_c, shape.dim[0_c]);
     }
 
 };
@@ -32,11 +33,11 @@ struct RowMajorLayout : AbstractLayoutProvider<RowMajorLayout> {
 struct ColMajorLayout : AbstractLayoutProvider<ColMajorLayout> {
     // Given a 2 x 4 matrix:
     // view:           [rows:  2, cols:  4]
-    // layout shape:   [outer: 4, inner: 2]
-    // layout strides: [outer: 2, inner: 1]
+    // layout shape:   [inner: 2, outer: 4]
+    // layout strides: [inner: 1, outer: 2]
     template <typename View>
     constexpr auto operator()(View&& view) const {
-        static_assert(std::remove_reference<View>::type::nDims == 2, "Matrix expected");
+        static_assert(std::remove_reference_t<View>::nDims == 2, "Matrix expected");
         auto shape = view_to_shape(view);
         auto strides = shape_to_strides(shape);
         return TensorLayout(shape, strides);
@@ -44,11 +45,13 @@ struct ColMajorLayout : AbstractLayoutProvider<ColMajorLayout> {
 
     template <typename View>
     constexpr auto view_to_shape(View &&view) const {
-        return Dims(view.dim[1_c], view.dim[0_c]);  // same as view
+        static_assert(std::remove_reference_t<View>::nDims == 2, "Matrix expected");
+        return Dims(view.dim[0_c], view.dim[1_c]);
     }
 
     template <typename Shape>
     constexpr auto shape_to_strides(Shape &&shape) const {
-        return Dims(shape.dim[1_c], 1_c);
+        static_assert(std::remove_reference_t<Shape>::nDims == 2, "Matrix expected");
+        return Dims(1_c, shape.dim[0_c]);
     }
 };

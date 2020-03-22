@@ -29,20 +29,20 @@ TEST(TestTensorFormat, Test2) {
 }
 
 TEST(TestTensorFormat, TestRowMajor) {
-    auto format = make_format(Dims(4_c, 2_c), RowMajorLayout());
+    auto format = make_format(Dims(2_c, 4_c), RowMajorLayout());
     auto shape = format.getLayout().getShape();
     auto stride = format.getLayout().getStrides();
 
-    static_assert(stride.dim[0_c] == shape.dim[1_c] && stride.dim[1_c] == 1_c);
+    static_assert(stride.dim[0_c] == 1_c && stride.dim[1_c] == 4_c);
 }
 
 TEST(TestTensorFormat, TestColMajor) {
-    auto format = make_format(Dims(4_c, 2_c), ColMajorLayout());
+    auto format = make_format(Dims(2_c, 4_c), ColMajorLayout());
     auto shape = format.getLayout().getShape();
     auto stride = format.getLayout().getStrides();
 
     static_assert(shape.dim[0_c] == 2_c && shape.dim[1_c] == 4_c);
-    static_assert(stride.dim[0_c] == 4_c && stride.dim[1_c] == 1_c);
+    static_assert(stride.dim[0_c] == 1_c && stride.dim[1_c] == 2_c);
 }
 
 
