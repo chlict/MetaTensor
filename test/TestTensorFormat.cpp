@@ -12,8 +12,8 @@ TEST(TestTensorFormat, Test1) {
     static_assert(format.view.dim == view.dim);
     static_assert(format.layout.shape.dim[0_c] == 4_c);
 
-    auto view2 = format.getView();
-    auto layout_shape = format.getLayout().getShape();
+    auto view2 = format.get_view();
+    auto layout_shape = format.get_layout().get_shape();
     static_assert(view2.dim == view.dim);
     static_assert(layout_shape.dim[0_c] == 4_c);
 }
@@ -30,16 +30,16 @@ TEST(TestTensorFormat, Test2) {
 
 TEST(TestTensorFormat, TestRowMajor) {
     auto format = make_format(Dims(2_c, 4_c), RowMajorLayout());
-    auto shape = format.getLayout().getShape();
-    auto stride = format.getLayout().getStrides();
+    auto shape = format.get_layout().get_shape();
+    auto stride = format.get_layout().get_strides();
 
     static_assert(stride.dim[0_c] == 1_c && stride.dim[1_c] == 4_c);
 }
 
 TEST(TestTensorFormat, TestColMajor) {
     auto format = make_format(Dims(2_c, 4_c), ColMajorLayout());
-    auto shape = format.getLayout().getShape();
-    auto stride = format.getLayout().getStrides();
+    auto shape = format.get_layout().get_shape();
+    auto stride = format.get_layout().get_strides();
 
     static_assert(shape.dim[0_c] == 2_c && shape.dim[1_c] == 4_c);
     static_assert(stride.dim[0_c] == 1_c && stride.dim[1_c] == 2_c);

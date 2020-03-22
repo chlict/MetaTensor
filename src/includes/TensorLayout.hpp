@@ -19,15 +19,15 @@ struct TensorLayout {
             shape(std::forward<Shape>(shape)),
             strides(std::forward<Strides>(stride)) {}
 
-    // If 'Shape' is a 'Dims' type which consists of a hana::tuple, layout.getShape() cannot be used in constexpr
+    // If 'Shape' is a 'Dims' type which consists of a hana::tuple, layout.get_shape() cannot be used in constexpr
     // but layout.shape can (clang++ fixes this in clang11).
-    // However, we can use 'shape = layout.getShape()' outside of a constant-evaluation context and use the 'shape'
+    // However, we can use 'shape = layout.get_shape()' outside of a constant-evaluation context and use the 'shape'
     // in constant-evaluation context.
-    constexpr auto getShape() const {
+    constexpr auto get_shape() const {
         return shape;
     }
 
-    constexpr auto getStrides() const {
+    constexpr auto get_strides() const {
         return strides;
     }
 };

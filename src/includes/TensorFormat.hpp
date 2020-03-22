@@ -22,11 +22,11 @@ struct TensorFormat {
             view(std::forward<TensorFormat>(other.view),
             layout(std::forward<TensorFormat>(other.layout))) {}
 
-    constexpr auto getView() const {
+    constexpr auto get_view() const {
         return view;
     }
 
-    constexpr auto getLayout() const {
+    constexpr auto get_layout() const {
         return layout;
     }
 };
