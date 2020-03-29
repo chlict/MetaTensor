@@ -3,12 +3,16 @@
 #include "MatrixFormats.hpp"
 #include <boost/hana/mult.hpp>
 
+struct CustomLayout : AbstractLayoutProvider<CustomLayout> {
+    template <typename View>
+    constexpr auto operator()(View&& view) const {
+        return TensorLayout(Dims(4_c, 2_c), Dims(2_c, 1_c));
+    }
+};
+
 TEST(TestTensorFormat, Test1) {
     auto view = Dims(4_c, 2_c);
-    auto layout_function = [](auto &&view) {
-        return TensorLayout(Dims(4_c, 2_c), Dims(2_c, 1_c));
-    };
-    auto format = make_format(view, layout_function);
+    auto format = make_format(view, CustomLayout());
     static_assert(format.view.dim == view.dim);
     static_assert(format.layout.shape.dim[0_c] == 4_c);
 
@@ -18,12 +22,16 @@ TEST(TestTensorFormat, Test1) {
     static_assert(layout_shape.dim[0_c] == 4_c);
 }
 
+struct CustomLayout2 : AbstractLayoutProvider<CustomLayout> {
+    template <typename View>
+    constexpr auto operator()(View&& view) const {
+        return TensorLayout(Dims(4, 2), Dims(2_c, 1_c));
+    }
+};
+
 TEST(TestTensorFormat, Test2) {
     auto view = Dims(4, 2);
-    auto layout_function = [](auto &&view) {
-        return TensorLayout(Dims(4, 2), Dims(2_c, 1_c));
-    };
-    auto format = make_format(view, layout_function);
+    auto format = make_format(view, CustomLayout2());
     assert(format.view.dim == view.dim);
     assert(format.layout.shape.dim[0_c] == 4);
 }

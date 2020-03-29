@@ -2,6 +2,8 @@
 
 #include "Literals.hpp"
 #include "TensorLayout.hpp"
+#include "LayoutProvider.hpp"
+#include "Utils.hpp"
 #include <type_traits>
 
 // View represents a logical shape. E.g. a fractal tensor may have a view of Dim2(width, height) like a matrix
@@ -38,8 +40,9 @@ struct TensorFormat {
 //}
 
 // TODO: View &&view
+// TODO: static_assert(LayoutProvider is sub-class of AbstractLayoutProvider<LayoutProvider>)
 template <typename View, typename LayoutProvider>
-constexpr auto make_format(View view, LayoutProvider layout_provider) {
+constexpr auto make_format(View view, AbstractLayoutProvider<LayoutProvider> const &layout_provider) {
     auto layout = layout_provider(view);
     return TensorFormat<View, decltype(layout)>(view, layout);
 }

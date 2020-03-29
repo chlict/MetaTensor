@@ -7,18 +7,18 @@ struct AbstractLayoutProvider {
     template <typename View>
     constexpr auto operator()(View&& view) const {
         const Provider *provider = static_cast<const Provider *>(this);
-        (*provider)(view);
+        return (*provider)(view);
     }
 
     template <typename View>
     constexpr auto view_to_shape(View &&view) const {
         const Provider *provider = static_cast<const Provider *>(this);
-        provider->view_to_shape(view);
+        return provider->view_to_shape(view);
     }
 
     template <typename Shape>
     constexpr auto shape_to_strides(Shape &&shape) const {
         const Provider *provider = static_cast<const Provider *>(this);
-        provider->shape_to_strides(shape);
+        return provider->shape_to_strides(shape);
     }
 };
