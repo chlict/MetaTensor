@@ -53,6 +53,17 @@ TEST(TestTensorFormat, TestColMajor) {
     static_assert(stride.dim[0_c] == 1_c && stride.dim[1_c] == 2_c);
 }
 
+TEST(TestTensorFormat, TestColMajor2) {
+    auto format = make_format(2_c, 4_c, ColMajorLayout());
+    auto shape = format.get_layout().get_shape();
+    auto stride = format.get_layout().get_strides();
+
+    static_assert(shape.dim[0_c] == 2_c && shape.dim[1_c] == 4_c);
+    static_assert(stride.dim[0_c] == 1_c && stride.dim[1_c] == 2_c);
+
+    auto format2 = make_format(2, 4, ColMajorLayout());
+    assert(format2.get_layout().get_shape().dim[0_c] == 2);
+}
 
 TEST(TestTensorFormat, test4) {
     auto x = boost::hana::mult(4, 2);

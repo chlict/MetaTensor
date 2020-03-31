@@ -4,8 +4,12 @@
 
 namespace hana = boost::hana;
 
+struct dims_tag {};
+
 template <typename ...T>
 struct Dims {
+    using tag = dims_tag;
+
     hana::tuple<T...> dim;
 
     constexpr explicit Dims(T... t) : dim(t...) {}
