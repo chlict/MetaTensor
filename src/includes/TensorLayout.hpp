@@ -7,27 +7,23 @@
 // Innermost dim positioned in leftmost.
 template <typename Shape, typename Strides>
 struct TensorLayout {
-    Shape shape;
+    Shape shape_;
 
-    Strides strides;
+    Strides strides_;
 
     constexpr TensorLayout(const Shape &shape, const Strides &stride) :
-            shape(shape),
-            strides(stride) {}
+            shape_(shape),
+            strides_(stride) {}
 
-    constexpr TensorLayout(Shape &&shape, Strides &&stride) noexcept :
-            shape(std::forward<Shape>(shape)),
-            strides(std::forward<Strides>(stride)) {}
-
-    // If 'Shape' is a 'Dims' type which consists of a hana::tuple, layout.get_shape() cannot be used in constexpr
+    // If 'Shape' is a 'Dims' type which consists of a hana::tuple, layout.shape() cannot be used in constexpr
     // but layout.shape can (clang++ fixes this in clang11).
-    // However, we can use 'shape = layout.get_shape()' outside of a constant-evaluation context and use the 'shape'
-    // in constant-evaluation context.
-    constexpr auto get_shape() const {
-        return shape;
+    // However, we can use 'shape = layout.shape()' outside of a constant evaluation context and use the 'shape'
+    // in constant evaluation context.
+    constexpr auto shape() const {
+        return shape_;
     }
 
-    constexpr auto get_strides() const {
-        return strides;
+    constexpr auto strides() const {
+        return strides_;
     }
 };

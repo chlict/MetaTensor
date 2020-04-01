@@ -25,5 +25,5 @@ TEST(TestTensor, Test2) {
     auto view = format2.get_view();
     auto layout = format2.get_layout();
     static_assert(view.dim[0_c] == 2_c);
-    static_assert(layout.shape.dim[0_c] == 4_c);
+    static_assert(layout.shape_.dim[0_c] == 4_c);
 }
