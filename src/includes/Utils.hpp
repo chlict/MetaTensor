@@ -3,6 +3,7 @@
 #include <cxxabi.h>
 #include <cstdio>
 #include <cstdlib>
+#include <boost/hana.hpp>
 
 // Usage:
 // 1) static_assert(is_a_t<tag, T>::value)

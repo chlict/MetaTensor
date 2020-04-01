@@ -1,4 +1,5 @@
 #pragma once
+#include "Literals.hpp"
 #include "LayoutProvider.hpp"
 
 // Do layout for row-major stored matrix
