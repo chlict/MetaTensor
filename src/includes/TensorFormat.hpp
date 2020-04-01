@@ -12,28 +12,28 @@ struct tensor_format_tag {};
 // but the underlying layout has a Dim4 shape.
 template<typename View, typename Layout>
 struct TensorFormat {
-    View view;
-    Layout layout;
+    View view_;
+    Layout layout_;
 
     using tag = tensor_format_tag;
 
     constexpr TensorFormat(View view, Layout layout) :
-        view(view), layout(layout) {}
+            view_(view), layout_(layout) {}
 
     constexpr TensorFormat(TensorFormat const &other) noexcept :
-            view(other.view),
-            layout(other.layout) {}
+            view_(other.view_),
+            layout_(other.layout_) {}
 
     constexpr TensorFormat(TensorFormat &&other) noexcept :
-            view(std::forward<TensorFormat>(other.view),
-            layout(std::forward<TensorFormat>(other.layout))) {}
+            view_(std::forward<TensorFormat>(other.view_),
+                  layout_(std::forward<TensorFormat>(other.layout_))) {}
 
-    constexpr auto get_view() const {
-        return view;
+    constexpr auto view() const {
+        return view_;
     }
 
-    constexpr auto get_layout() const {
-        return layout;
+    constexpr auto layout() const {
+        return layout_;
     }
 };
 

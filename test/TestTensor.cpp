@@ -22,8 +22,8 @@ TEST(TestTensor, Test2) {
     static_assert(std::is_same_v<tensor_traits<T>::space, MemSpace::GM>);
 
     auto format2 = tensor2.format();
-    auto view = format2.get_view();
-    auto layout = format2.get_layout();
+    auto view = format2.view();
+    auto layout = format2.layout();
     static_assert(view.dim[0_c] == 2_c);
     static_assert(layout.shape_.dim[0_c] == 4_c);
 }
