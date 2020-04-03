@@ -26,4 +26,13 @@ TEST(TestTensor, Test2) {
     auto layout = format2.layout();
     static_assert(view.dim[0_c] == 2_c);
     static_assert(layout.shape_.dim[0_c] == 4_c);
+
+    auto view_0 = tensor2.view().dim[0_c];
+    auto view_1 = tensor2.view().dim[1_c];
+    static_assert(view_0 == 2_c && view_1 == 4_c);
+
+    auto shape_0 = tensor2.shape().dim[0_c];
+    static_assert(shape_0 == 4_c);
+    auto stride_0 = tensor2.strides().dim[0_c];
+    static_assert(stride_0 == 1_c);
 }

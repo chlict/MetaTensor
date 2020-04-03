@@ -35,6 +35,14 @@ struct TensorFormat {
     constexpr auto layout() const {
         return layout_;
     }
+
+    constexpr auto shape() const {
+        return layout_.shape();
+    }
+
+    constexpr auto strides() const {
+        return layout_.strides();
+    }
 };
 
 // TODO: View &&view

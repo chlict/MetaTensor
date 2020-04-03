@@ -19,7 +19,7 @@ TEST(TestDims, Test2) {
 
 TEST(TestDims, Test3) {
     // Add constexpr
-    auto constexpr dims = Dims(1, 2, 3);
+    auto constexpr dims = Dim4(1, 2, 3, 4);
 
     static_assert(dims.dim[0_c] == 1);
     static_assert(dims.dim[1_c] == 2);
@@ -30,9 +30,7 @@ TEST(TestDims, Test3) {
 
 TEST(TestDims, Test4) {
     // No constexpr
-    auto dims = Dims(1_c, 2_c, 3_c);
-    print_type_name(1_c);
-    print_type_name(dims);
+    auto dims = Dim4(1_c, 2_c, 3_c, 4_c);
 
     static_assert(dims.dim[0_c] == 1_c);
     static_assert(dims.dim[1_c] == 2_c);
@@ -42,8 +40,8 @@ TEST(TestDims, Test4) {
 }
 
 TEST(TestDims, Test5) {
-    auto constexpr dims1 = Dims(1, 2, 3);
-    auto constexpr dims2 = Dims(dims1);
+    auto constexpr dims1 = Dim4(1, 2, 3, 4);
+    auto constexpr dims2 = Dim4(dims1);
 
     static_assert(dims1.dim[0_c] == dims2.dim[0_c]);
     static_assert(dims1.dim[1_c] == dims2.dim[1_c]);
@@ -74,6 +72,5 @@ TEST(TestDims, Test6) {
     auto d4 = add1(d1, d2);
     static_assert(d4.dim[0_c] == 20_c);
     static_assert(d4.dim[1_c] == 40_c);
-
-    print_type_name(d4);
 }
+

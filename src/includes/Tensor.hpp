@@ -32,13 +32,17 @@ struct Tensor {
 
     constexpr Tensor(Tensor &&other) noexcept : format_(other.format_), addr_(other.addr_) {}
 
-    constexpr auto format() {
-        return format_;
-    }
+    constexpr auto format() const { return format_; }
 
-    constexpr auto addr() {
-        return addr_;
-    }
+    constexpr auto addr() const { return addr_; }
+
+    constexpr auto view() const { return format_.view(); }
+
+    constexpr auto layout() const { return format_.layout(); }
+
+    constexpr auto shape() const { return format_.shape(); }
+
+    constexpr auto strides() const { return format_.strides(); }
 };
 
 template<typename T>

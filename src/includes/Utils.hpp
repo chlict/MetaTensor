@@ -49,3 +49,16 @@ struct is_integral_or_constant_t : std::integral_constant<bool,
 
 template <typename T>
 constexpr bool is_integral_or_constant = is_integral_or_constant_t<T>::value;
+
+template <typename ...T>
+struct all_integral_or_constant_t {
+    static constexpr auto types = boost::hana::tuple_t<T...>;
+    static constexpr auto value = boost::hana::all_of(types, [](auto &&v) {
+        using t = typename std::remove_reference_t<decltype(v)>::type;
+        return is_integral_or_constant<t>;
+    });
+};
+
+template <typename ...T>
+constexpr bool all_integral_or_constant = all_integral_or_constant_t<T...>::value;
+
