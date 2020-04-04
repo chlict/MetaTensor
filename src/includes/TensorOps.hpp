@@ -82,7 +82,7 @@ constexpr auto tmov1(Tensor1 &&tensor1, Tensor2 &&tensor2) {
     static_assert(is_tensor<std::remove_reference_t<Tensor1>>);
     auto shape1 = tensor1.shape();
     auto shape2 = tensor2.shape();
-    printf("tmov(tensor %lu, tensor %lu)\n", shape1.nDims, shape2.nDims);
+    printf("tmov1(tensor %lu, tensor %lu)\n", shape1.nDims, shape2.nDims);
 }
 
 template <typename Tensor1, typename Tensor2>
@@ -90,5 +90,5 @@ constexpr auto tadd1(Tensor1 &&tensor1, Tensor2 &&tensor2) {
     static_assert(is_tensor<std::remove_reference_t<Tensor1>>);
     auto shape1 = tensor1.shape();
     auto shape2 = tensor2.shape();
-    printf("tadd(tensor %lu, tensor %lu)\n", shape1.nDims, shape2.nDims);
+    printf("tadd1(tensor %lu, tensor %lu)\n", shape1.nDims, shape2.nDims);
 }

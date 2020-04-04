@@ -6,6 +6,6 @@ set(CMAKE_CXX_STANDARD 17)
 add_executable(TensorExamples main.cpp)
 
 include_directories(src/includes)
-include_directories(third-party/boost_1_68_0)
+include_directories($ENV{HOME}/software/boost_1_68_0)
 
 add_subdirectory(test)

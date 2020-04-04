@@ -53,7 +53,7 @@ struct Tensor : TensorHandle {
     constexpr auto strides() const { return format_.strides(); }
 
     friend std::ostream& operator << (std::ostream &os, Tensor tensor) {
-        os << "I'm a Tensor";
+        os << "Tensor@" << tensor.addr();
         return os;
     }
 };
