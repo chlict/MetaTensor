@@ -5,7 +5,7 @@ void Tester1() {
     auto format1 = make_format(Dims(2_c, 4_c), RowMajorLayout());
     auto tensor1 = Tensor(float(), format1, MemSpace::GM(), 0x1000);
     auto tensor2 = Tensor(float(), format1, MemSpace::GM(), 0x2000);
-    tadd(tensor1, tensor2);
+    tadd1(tensor1, tensor2);
 }
 
 TEST(TestTensorOps, Test1) {

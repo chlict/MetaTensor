@@ -78,7 +78,7 @@ struct TAdd {
 };
 
 template <typename Tensor1, typename Tensor2>
-constexpr auto tmov(Tensor1 &&tensor1, Tensor2 &&tensor2) {
+constexpr auto tmov1(Tensor1 &&tensor1, Tensor2 &&tensor2) {
     static_assert(is_tensor<std::remove_reference_t<Tensor1>>);
     auto shape1 = tensor1.shape();
     auto shape2 = tensor2.shape();
@@ -86,7 +86,7 @@ constexpr auto tmov(Tensor1 &&tensor1, Tensor2 &&tensor2) {
 }
 
 template <typename Tensor1, typename Tensor2>
-constexpr auto tadd(Tensor1 &&tensor1, Tensor2 &&tensor2) {
+constexpr auto tadd1(Tensor1 &&tensor1, Tensor2 &&tensor2) {
     static_assert(is_tensor<std::remove_reference_t<Tensor1>>);
     auto shape1 = tensor1.shape();
     auto shape2 = tensor2.shape();
