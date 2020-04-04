@@ -36,3 +36,18 @@ TEST(TestTensor, Test2) {
     auto stride_0 = tensor2.strides().dim[0_c];
     static_assert(stride_0 == 1_c);
 }
+
+TEST(TestTensor, Test3) {
+    auto format1 = make_format(Dims(2_c, 4_c), RowMajorLayout());
+    auto tensor1 = Tensor(float(), format1, MemSpace::GM(), 0x1000);
+    TensorHandle &th = tensor1;
+    using T1 = decltype(tensor1);
+    auto tensor2 = static_cast<T1&>(th);
+    print_type_name(tensor1);
+    print_type_name(tensor2);
+    auto view_0 = tensor2.view().dim[0_c];
+    static_assert(view_0 == 2_c);
+
+    std::cout << th << std::endl;
+    std::cout << tensor2 << std::endl;
+}
