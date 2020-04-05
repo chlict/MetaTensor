@@ -13,13 +13,15 @@ TEST(TestAllocTensor, Test1) {
 //    auto tensor2 = MakeTensor(2);
     auto term1 = yap::make_terminal(tensor1);
     auto term2 = yap::make_terminal(tensor2);
-    auto expr1 = term1 + term2;
+    auto term3 = yap::make_terminal(tensor3);
+    auto expr1 = term1 + term2 * term3;
     auto gen = yap::transform(expr1, GenIR{hana::make_tuple(), hana::make_tuple()});
     printf("After transform:\n");
     print_ir_list(gen.mIRList);
 
-    auto ir0 = gen.mIRList[0_c];
-    alloc_tensor(gen.mIRList);
+    auto ir_list2 = SubstituteTemps(gen.mIRList, alloc_tensor(gen.mIRList));
+
+    print_ir_list(ir_list2);
     //auto &&map = AllocBuffer(gen.mIRList);
     //auto irList2 = SubstituteTemps(gen.mIRList, map);
     //printf("After AllocBuffer and SubstituteTemps:\n");

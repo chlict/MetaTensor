@@ -3,20 +3,20 @@
 #include <boost/yap/expression.hpp>
 #include <iostream>
 
-namespace yap = boost::yap;
-namespace hana = boost::hana;
+struct temp_placeholder_tag;
 
 // A placeholder for temporary variables
 template <long long I>
 struct temp_placeholder : boost::hana::llong<I> {
+    using tag = temp_placeholder_tag;
     friend std::ostream& operator<< (std::ostream& os, const temp_placeholder<I> &p) {
         os << "temp" << I;
         return os;
     }
 };
 
-auto const _0 = yap::make_terminal(temp_placeholder<0>{});
-auto const _1 = yap::make_terminal(temp_placeholder<1>{});
-auto const _2 = yap::make_terminal(temp_placeholder<2>{});
-auto const _3 = yap::make_terminal(temp_placeholder<3>{});
-auto const _4 = yap::make_terminal(temp_placeholder<4>{});
+auto const _0 = boost::yap::make_terminal(temp_placeholder<0>{});
+auto const _1 = boost::yap::make_terminal(temp_placeholder<1>{});
+
+template <typename T>
+constexpr bool is_temp = is_a<temp_placeholder_tag, T>;
