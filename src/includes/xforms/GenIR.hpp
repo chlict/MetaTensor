@@ -48,11 +48,12 @@ struct GenIR {
 
         auto constexpr index = decltype(genRhs)::placeholder_index;
         auto temp = yap::make_terminal(temp_placeholder<index>{});
-        auto assign = yap::make_expression<yap::expr_kind::assign>(std::move(temp),
-                                                                   yap::make_expression<Kind>(
-                                                                           std::move(hana::back(genLhs.mStack)),  // lhs's result
-                                                                           std::move(hana::back(genRhs.mStack))   // rhs's result
-                                                                   )
+        auto assign = yap::make_expression<yap::expr_kind::assign>(
+                std::move(temp),
+                yap::make_expression<Kind>(
+                        std::move(hana::back(genLhs.mStack)),  // lhs's result
+                        std::move(hana::back(genRhs.mStack))   // rhs's result
+                )
         );
         // printf("append:\n"); yap::print(std::cout, assign);
         auto newIRList = hana::append(genRhs.mIRList, std::move(assign));
