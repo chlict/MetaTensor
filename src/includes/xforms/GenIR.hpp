@@ -7,26 +7,9 @@
 #include <iostream>
 #include "Placeholder.hpp"
 #include "xforms/XformUtils.hpp"
-#include "xforms/PrintIR.hpp"
 
 namespace yap = boost::yap;
 namespace hana = boost::hana;
-
-template <typename IRList>
-constexpr auto print_ir_list(IRList &&irlist) {
-    static_assert(hana::is_a<hana::tuple_tag, IRList>);
-    hana::for_each(irlist, [](auto &&ir) {
-        yap::print(std::cout, ir);
-    });
-}
-
-template <typename IRList>
-constexpr auto print_ir_list_simple(IRList &&irlist) {
-    static_assert(hana::is_a<hana::tuple_tag, IRList>);
-    hana::for_each(irlist, [](auto &&ir) {
-        boost::yap2::print_ir(std::cout, ir);
-    });
-}
 
 template <typename Sequence, typename Stack, long long I = 1>
 struct GenIR {

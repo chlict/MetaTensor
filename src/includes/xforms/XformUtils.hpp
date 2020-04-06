@@ -1,7 +1,8 @@
 #pragma once
 
-#include "Utils.hpp"
 #include <iostream>
+#include "Utils.hpp"
+#include "xforms/PrintIR.hpp"
 
 struct xform_pass_tag;
 
@@ -29,4 +30,19 @@ struct all_xform_passes_t {
 template <typename ...T>
 constexpr bool all_xform_passes = all_xform_passes_t<T...>::value;
 
+template <typename IRList>
+constexpr auto print_ir_list(IRList &&irlist) {
+    static_assert(hana::is_a<hana::tuple_tag, IRList>);
+    hana::for_each(irlist, [](auto &&ir) {
+        boost::yap::print(std::cout, ir);
+    });
+}
 
+// Skip printing the long type name
+template <typename IRList>
+constexpr auto print_ir_list_simple(IRList &&irlist) {
+    static_assert(hana::is_a<hana::tuple_tag, IRList>);
+    hana::for_each(irlist, [](auto &&ir) {
+        boost::yap2::print_ir(std::cout, ir);
+    });
+}
