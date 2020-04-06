@@ -49,7 +49,7 @@ TEST_F(TestCodeGen, DynamicShape1) {
     auto term2 = yap::make_terminal(tensor2);
     auto term3 = yap::make_terminal(tensor3);
     auto expr1 = (term1 + term2) * term3;
-    auto gen = yap::transform(expr1, GenIR{hana::make_tuple(), hana::make_tuple()});
+    auto gen = yap::transform(expr1, GenIRXform{hana::make_tuple(), hana::make_tuple()});
 //    printf("After GenIR:\n");
 //    print_ir_list_simple(gen.mIRList);
 
@@ -76,7 +76,7 @@ TEST_F(TestCodeGen, StaticShape1) {
     auto term2 = yap::make_terminal(tensor2);
     auto term3 = yap::make_terminal(tensor3);
     auto expr1 = (term1 + term2) * term3;
-    auto gen = yap::transform(expr1, GenIR{hana::make_tuple(), hana::make_tuple()});
+    auto gen = yap::transform(expr1, GenIRXform{hana::make_tuple(), hana::make_tuple()});
 //    printf("After GenIR:\n");
 //    print_ir_list_simple(gen.mIRList);
 

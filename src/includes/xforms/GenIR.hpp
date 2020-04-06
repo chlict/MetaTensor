@@ -12,12 +12,12 @@ namespace yap = boost::yap;
 namespace hana = boost::hana;
 
 template <typename Sequence, typename Stack, long long I = 1>
-struct GenIR {
+struct GenIRXform {
     Sequence mIRList;
     Stack mStack;
     static const long long placeholder_index = I;
 
-    constexpr GenIR(const Sequence &seq, const Stack &stk) : mIRList(seq), mStack(stk) {
+    constexpr GenIRXform(const Sequence &seq, const Stack &stk) : mIRList(seq), mStack(stk) {
         // printf("GenIR constructor:\n");
         // printf("mIRList: "); hana::for_each(mIRList, [](const auto &ir) {yap::print(std::cout, ir);});
         // printf("mStack: "); hana::for_each(mStack, [](const auto &expr) {yap::print(std::cout, expr);});
@@ -28,13 +28,13 @@ struct GenIR {
         // printf("GenIR: terminal matched\n");
         // Push result onto stack
         auto stack = hana::append(mStack, std::move(yap::make_terminal(t)));
-        return GenIR<decltype(mIRList), decltype(stack), I>{mIRList, stack};
+        return GenIRXform<decltype(mIRList), decltype(stack), I>{mIRList, stack};
     }
 
     template <yap::expr_kind Kind, typename Expr1, typename Expr2>
     auto operator() (yap::expr_tag<Kind>, Expr1 &&lhs, Expr2 &&rhs) {
         // printf("GenIR: binary op matched\n");
-        auto genLhs = yap::transform(yap::as_expr(lhs), GenIR<decltype(mIRList), decltype(mStack), I>(mIRList, mStack));
+        auto genLhs = yap::transform(yap::as_expr(lhs), GenIRXform<decltype(mIRList), decltype(mStack), I>(mIRList, mStack));
         // printf("genLhs:\n"); PrintIRList(genLhs.mIRList);
         auto genRhs = yap::transform(yap::as_expr(rhs), genLhs);
         // printf("genRhs:\n"); PrintIRList(genRhs.mIRList);
@@ -54,7 +54,7 @@ struct GenIR {
         // Push result onto stack
         auto newStack = hana::append(mStack, std::move(temp));
 
-        return GenIR<decltype(newIRList), decltype(newStack), index + 1>(newIRList, newStack);
+        return GenIRXform<decltype(newIRList), decltype(newStack), index + 1>(newIRList, newStack);
     }
 
     template <typename Callable, typename ...Args>
@@ -67,18 +67,18 @@ struct GenIR {
         // printf("assign:\n"); yap::print(std::cout, assign);
         auto newIRList = hana::append(mIRList, std::move(assign));
         auto newStack = hana::append(mStack, std::move(yap::make_terminal(temp_placeholder<I>{})));
-        return GenIR<decltype(newIRList), decltype(newStack), I + 1>{newIRList, newStack};
+        return GenIRXform<decltype(newIRList), decltype(newStack), I + 1>{newIRList, newStack};
     }
 };
 
 
-struct GenIRPass : StaticTransform {
+struct GenIR : StaticTransform {
     using tag = xform_pass_tag;
 
     // Given a yap expression as an AST, returns a list of flattened IR
     template <typename AST>
     constexpr auto transform(AST &&ast) const {
-        auto gen = yap::transform(std::forward<AST>(ast), GenIR{hana::make_tuple(), hana::make_tuple()});
+        auto gen = yap::transform(std::forward<AST>(ast), GenIRXform{hana::make_tuple(), hana::make_tuple()});
         return gen.mIRList;
     }
 };

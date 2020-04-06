@@ -18,7 +18,7 @@ TEST(TestGenIR, Test2) {
     auto ten1 = yap::make_terminal(tensor1);
     auto ten2 = yap::make_terminal(tensor2);
     auto add1 = ten1 + ten2 + tensor3;
-    auto gen = yap::transform(add1, GenIR(hana::make_tuple(), hana::make_tuple()));
+    auto gen = yap::transform(add1, GenIRXform(hana::make_tuple(), hana::make_tuple()));
     auto ir_list= gen.mIRList;
     print_ir_list(ir_list);
 }
