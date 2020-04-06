@@ -8,7 +8,7 @@
 #include "xforms/Placeholder.hpp"
 #include "xforms/PrintIR.hpp"
 #include "Tensor.hpp"
-#include "Xforms.hpp"
+#include "XformUtils.hpp"
 
 /**
  * Given a list of IR, this transform allocates new tensors and replace the placeholders with tensors.

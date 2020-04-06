@@ -6,6 +6,7 @@
 #include <boost/yap/print.hpp>
 #include <iostream>
 #include "Placeholder.hpp"
+#include "xforms/XformUtils.hpp"
 #include "xforms/PrintIR.hpp"
 
 namespace yap = boost::yap;
@@ -85,6 +86,5 @@ struct GenIR {
         auto newStack = hana::append(mStack, std::move(yap::make_terminal(temp_placeholder<I>{})));
         return GenIR<decltype(newIRList), decltype(newStack), I + 1>{newIRList, newStack};
     }
-
 };
 

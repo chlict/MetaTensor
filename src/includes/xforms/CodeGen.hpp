@@ -9,7 +9,7 @@
 #include "xforms/PrintIR.hpp"
 #include "Tensor.hpp"
 #include "TensorOps.hpp"
-#include "Xforms.hpp"
+#include "XformUtils.hpp"
 
 struct CodeGenXform {
     template <yap::expr_kind BinaryOP, typename Dest, typename Src1, typename Src2>
