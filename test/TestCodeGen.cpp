@@ -3,6 +3,7 @@
 #include "xforms/GenIR.hpp"
 #include "xforms/AllocTensor.hpp"
 #include "xforms/CodeGen.hpp"
+#include "ExprCompiler.hpp"
 
 struct TestCodeGen : public ::testing::Test {
 private:
@@ -76,17 +77,7 @@ TEST_F(TestCodeGen, StaticShape1) {
     auto term2 = yap::make_terminal(tensor2);
     auto term3 = yap::make_terminal(tensor3);
     auto expr1 = (term1 + term2) * term3;
-    auto gen = yap::transform(expr1, GenIRXform{hana::make_tuple(), hana::make_tuple()});
-//    printf("After GenIR:\n");
-//    print_ir_list_simple(gen.mIRList);
 
-    auto at = AllocTensor();
-    auto ir2 = at.transform(gen.mIRList);
-//    printf("AllocTensor\n");
-//    print_ir_list_simple(ir2);
-
-    auto codes = hana::transform(ir2, [](auto &&ir) {
-        return yap::transform(ir, CodeGenXform());
-    });
+    auto codes = ExprCompiler::compile(expr1);
     launch(codes);
 }

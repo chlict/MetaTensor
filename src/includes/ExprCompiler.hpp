@@ -13,7 +13,7 @@ struct ExprCompiler {
     static constexpr auto compile(AST &&ast) {
         auto ir1 = GenIR().transform(ast);
         auto ir2 = AllocTensor().transform(ir1);
-        auto codes = CodeGenPass().transform(ir2);
+        auto codes = CodeGen().transform(ir2);
         return codes;
     }
 };

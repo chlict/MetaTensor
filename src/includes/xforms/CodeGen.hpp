@@ -46,7 +46,7 @@ struct CodeGenXform {
     }
 };
 
-struct CodeGenPass : StaticTransform {
+struct CodeGen : StaticTransform {
     using tag = xform_pass_tag;
 
     // Given an IRList, returns the codes generated
