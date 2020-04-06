@@ -10,7 +10,7 @@ template <long long I>
 struct temp_placeholder : boost::hana::llong<I> {
     using tag = temp_placeholder_tag;
 
-    constexpr long long getI() const { return I; }
+    static constexpr long long id = I;
 
     friend std::ostream& operator<< (std::ostream& os, const temp_placeholder<I> &p) {
         os << "temp" << I;

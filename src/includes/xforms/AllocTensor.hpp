@@ -26,10 +26,13 @@
 
 template<typename Lhs, typename ExprMap>
 constexpr auto deduce_tensor_helper(Lhs &&lhs, ExprMap &&map) {
-    if constexpr (is_tensor<std::remove_reference_t<Lhs> >) {
+    using T = std::remove_reference_t<Lhs>;
+    static_assert(is_tensor<T> || is_temp<T>);
+    if constexpr (is_tensor<T>) {
         return lhs;
     } else {
-        return map[hana::llong_c<lhs.getI()>];
+        auto tensor_expr = map[hana::llong_c<T::id>];   // should be a terminal of tensor
+        return yap::value(tensor_expr);
     }
 }
 
@@ -41,7 +44,8 @@ template<typename Lhs, typename ExprMap,
 >
 constexpr auto deduce_tensor(Lhs &&lhs, ExprMap &&map) {
     if constexpr (is_temp<std::remove_reference_t<Lhs> >) {
-        static_assert(hana::contains(decltype(hana::keys(map))(), hana::llong_c<lhs.getI()>));
+        using T = std::remove_reference_t<Lhs>;
+        static_assert(hana::contains(decltype(hana::keys(map))(), hana::llong_c<T::id>));
     }
 
     auto src_tensor = deduce_tensor_helper(static_cast<Lhs &&>(lhs), static_cast<ExprMap &&>(map));
