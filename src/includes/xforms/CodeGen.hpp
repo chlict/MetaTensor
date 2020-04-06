@@ -45,3 +45,16 @@ struct CodeGenXform {
         }
     }
 };
+
+struct CodeGenPass : StaticTransform {
+    using tag = xform_pass_tag;
+
+    // Given an IRList, returns the codes generated
+    template <typename IRList>
+    constexpr auto transform(IRList &&irlist) const {
+        auto codes = hana::transform(irlist, [](auto &&ir) {
+            return yap::transform(ir, CodeGenXform());
+        });
+        return codes;
+    }
+};

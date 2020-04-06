@@ -3,7 +3,9 @@
 #include "Utils.hpp"
 #include "TensorFormat.hpp"
 #include "MatrixFormats.hpp"
+#include <boost/yap/expression.hpp>
 #include <iostream>
+
 
 struct mem_space_tag;
 
@@ -57,6 +59,18 @@ struct Tensor : TensorHandle {
         return os;
     }
 };
+
+// Tensor expression - a boost::yap's terminal of Tensor
+template<typename ElemType, typename Format, typename Space, typename Addr,
+        typename = std::enable_if_t<
+                is_a<mem_space_tag, Space> &&
+                is_a<tensor_format_tag, Format> &&
+                is_integral_or_constant<Addr>,
+                void> >
+constexpr auto TensorE(ElemType const &type, Format const &format, Space const &space, Addr const &addr) {
+    auto tensor = Tensor(type, format, space, addr);
+    return boost::yap::make_terminal(std::move(tensor));
+}
 
 template<typename T>
 struct tensor_traits;

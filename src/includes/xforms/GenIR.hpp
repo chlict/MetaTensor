@@ -88,3 +88,14 @@ struct GenIR {
     }
 };
 
+
+struct GenIRPass : StaticTransform {
+    using tag = xform_pass_tag;
+
+    // Given a yap expression as an AST, returns a list of flattened IR
+    template <typename AST>
+    constexpr auto transform(AST &&ast) const {
+        auto gen = yap::transform(std::forward<AST>(ast), GenIR{hana::make_tuple(), hana::make_tuple()});
+        return gen.mIRList;
+    }
+};
