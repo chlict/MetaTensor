@@ -4,6 +4,6 @@ include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
 
 # adding the run_tests target
 add_executable(run_tests test.cpp TestDims.cpp TestLayout.cpp TestTensorFormat.cpp TestLiterals.cpp TestUtils.cpp
-        TestTensor.cpp TestTensorOps.cpp TestGenIR.cpp TestTensorOps2.cpp TestAllocTensor.cpp TestCodeGen.cpp TestExprCompiler.cpp)
+        TestTensor.cpp TestTensorOps.cpp TestGenIR.cpp TestTensorOps2.cpp TestAllocTensor.cpp TestCodeGen.cpp TestExprCompiler.cpp TestTiling.cpp TestOperator.cpp)
 
 target_link_libraries(run_tests gtest gtest_main)

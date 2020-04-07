@@ -5,6 +5,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <boost/hana.hpp>
+#include <boost/yap/yap.hpp>
 
 // Usage:
 // 1) static_assert(is_a_t<tag, T>::value)
@@ -63,3 +64,20 @@ struct all_integral_or_constant_t {
 template <typename ...T>
 constexpr bool all_integral_or_constant = all_integral_or_constant_t<T...>::value;
 
+template <typename Tag, typename ...T>
+struct all_are_t {
+    static constexpr auto types = boost::hana::tuple_t<T...>;
+    static constexpr auto value = boost::hana::all_of(types, [](auto &&v) {
+        using t = typename std::remove_reference_t<decltype(v)>::type;
+        return is_a<Tag, t>;
+    });
+};
+
+template <typename Tag, typename ...T>
+constexpr bool all_are = all_are_t<Tag, T...>::value;
+
+template <typename T>
+constexpr bool is_hana_tuple_type = boost::hana::is_a<boost::hana::tuple_tag, T>;
+
+template <typename T>
+constexpr bool is_yap_expr_type = boost::yap::is_expr<T>::value;

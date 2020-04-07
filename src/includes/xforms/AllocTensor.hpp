@@ -27,8 +27,8 @@
 template<typename Lhs, typename ExprMap>
 constexpr auto deduce_tensor_helper(Lhs &&lhs, ExprMap &&map) {
     using T = std::remove_reference_t<Lhs>;
-    static_assert(is_tensor<T> || is_temp<T>);
-    if constexpr (is_tensor<T>) {
+    static_assert(is_tensor_type<T> || is_temp<T>);
+    if constexpr (is_tensor_type<T>) {
         return lhs;
     } else {
         auto tensor_expr = map[hana::llong_c<T::id>];   // should be a terminal of tensor
@@ -38,7 +38,7 @@ constexpr auto deduce_tensor_helper(Lhs &&lhs, ExprMap &&map) {
 
 template<typename Lhs, typename ExprMap,
         typename = std::enable_if_t<
-                (is_tensor<std::remove_reference_t<Lhs> > || is_temp<std::remove_reference_t<Lhs> >) &&
+                (is_tensor_type<std::remove_reference_t<Lhs> > || is_temp<std::remove_reference_t<Lhs> >) &&
                 hana::is_a<hana::map_tag, std::remove_reference_t<ExprMap> >,
                 void>
 >
@@ -50,7 +50,7 @@ constexpr auto deduce_tensor(Lhs &&lhs, ExprMap &&map) {
 
     auto src_tensor = deduce_tensor_helper(static_cast<Lhs &&>(lhs), static_cast<ExprMap &&>(map));
     using TensorType = typename std::remove_reference_t<decltype(src_tensor)>;
-    static_assert(is_tensor<TensorType>);
+    static_assert(is_tensor_type<TensorType>);
 
     using ElemType = typename tensor_traits<TensorType>::elem_type;
     using Space = typename tensor_traits<TensorType>::space;
@@ -90,8 +90,8 @@ struct TempScanner {
         auto rhs = yap::value(rhs_expr);
         using LhsType = typename std::remove_reference<decltype(lhs)>::type;
         using RhsType = typename std::remove_reference<decltype(rhs)>::type;
-        static_assert(is_tensor<LhsType> || is_temp<LhsType>);
-        static_assert(is_tensor<RhsType> || is_temp<RhsType>);
+        static_assert(is_tensor_type<LhsType> || is_temp<LhsType>);
+        static_assert(is_tensor_type<RhsType> || is_temp<RhsType>);
 
         // By default deduces result tensor from lhs
         auto result_tensor = deduce_tensor(lhs, map_);

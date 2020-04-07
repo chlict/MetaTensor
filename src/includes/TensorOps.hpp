@@ -5,7 +5,7 @@
 
 template<typename Tensor1, typename Tensor2,
         typename = std::enable_if_t<
-                is_tensor<Tensor1> && is_tensor<Tensor2>,
+                is_tensor_type<Tensor1> && is_tensor_type<Tensor2>,
                 void>
 >
 struct TMov {
@@ -41,8 +41,8 @@ struct TMov {
 
 template<typename Dest, typename Src1, typename Src2,
         typename = std::enable_if_t<
-                is_tensor<Dest> && is_tensor<Src1> && is_tensor<Src2>,
-                void>
+                is_tensor_type<Dest> && is_tensor_type<Src1> && is_tensor_type<Src2>,
+        void>
 >
 struct TAdd {
     const Dest &dest_;
@@ -83,7 +83,7 @@ struct TAdd {
 
 template <typename Tensor1, typename Tensor2>
 constexpr auto tmov1(Tensor1 &&tensor1, Tensor2 &&tensor2) {
-    static_assert(is_tensor<std::remove_reference_t<Tensor1>>);
+    static_assert(is_tensor_type<std::remove_reference_t<Tensor1>>);
     auto shape1 = tensor1.shape();
     auto shape2 = tensor2.shape();
     printf("tmov1(tensor %lu, tensor %lu)\n", shape1.nDims, shape2.nDims);
@@ -91,7 +91,7 @@ constexpr auto tmov1(Tensor1 &&tensor1, Tensor2 &&tensor2) {
 
 template <typename Tensor1, typename Tensor2>
 constexpr auto tadd1(Tensor1 &&tensor1, Tensor2 &&tensor2) {
-    static_assert(is_tensor<std::remove_reference_t<Tensor1>>);
+    static_assert(is_tensor_type<std::remove_reference_t<Tensor1>>);
     auto shape1 = tensor1.shape();
     auto shape2 = tensor2.shape();
     printf("tadd1(tensor %lu, tensor %lu)\n", shape1.nDims, shape2.nDims);

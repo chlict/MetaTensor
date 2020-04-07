@@ -23,6 +23,9 @@ struct TensorHandle {
 
 struct tensor_tag;
 
+template <typename T>
+constexpr bool is_tensor_type = is_a<tensor_tag, T>;
+
 template<typename ElemType, typename Format, typename Space, typename Addr,
         typename = std::enable_if_t<
                 is_a<mem_space_tag, Space> &&
@@ -55,7 +58,7 @@ struct Tensor : TensorHandle {
     constexpr auto strides() const { return format_.strides(); }
 
     friend std::ostream& operator << (std::ostream &os, Tensor tensor) {
-        os << "Tensor@" << tensor.addr();
+        os << "Tensor@0x" << std::hex << tensor.addr() << std::dec;
         return os;
     }
 };
@@ -81,9 +84,3 @@ struct tensor_traits<Tensor<ElemType, Format, Space, Addr>> {
     using elem_type = ElemType;
 };
 
-template <typename T>
-struct is_tensor_t : std::integral_constant<bool, is_a<tensor_tag, T> >
-{};
-
-template <typename T>
-constexpr bool is_tensor = is_tensor_t<T>::value;

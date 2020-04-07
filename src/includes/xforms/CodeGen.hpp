@@ -20,9 +20,9 @@ struct CodeGenXform {
         auto src1 = yap::value(yap::left(bin_expr));
         auto src2 = yap::value(yap::right(bin_expr));
 
-        static_assert(is_tensor<std::remove_reference_t<decltype(dest)> >);
-        static_assert(is_tensor<std::remove_reference_t<decltype(src1)> >);
-        static_assert(is_tensor<std::remove_reference_t<decltype(src2)> >);
+        static_assert(is_tensor_type<std::remove_reference_t<decltype(dest)> >);
+        static_assert(is_tensor_type<std::remove_reference_t<decltype(src1)> >);
+        static_assert(is_tensor_type<std::remove_reference_t<decltype(src2)> >);
 
 //        printf("CodeGenXform: tensor = expr1 op expr2 matched\n");
 
