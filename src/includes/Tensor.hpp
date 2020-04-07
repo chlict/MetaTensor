@@ -2,7 +2,7 @@
 
 #include "Utils.hpp"
 #include "TensorFormat.hpp"
-#include "MatrixFormats.hpp"
+#include "MatrixFormat.hpp"
 #include <boost/yap/expression.hpp>
 #include <iostream>
 

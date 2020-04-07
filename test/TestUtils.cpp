@@ -1,6 +1,6 @@
 #include "gtest/gtest.h"
 #include "TensorFormat.hpp"
-#include "MatrixFormats.hpp"
+#include "MatrixFormat.hpp"
 
 TEST(TestUtils, Test1) {
     auto dim2 = Dims(2, 4);

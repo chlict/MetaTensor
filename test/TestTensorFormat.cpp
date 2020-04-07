@@ -1,6 +1,6 @@
 #include "gtest/gtest.h"
 #include "TensorFormat.hpp"
-#include "MatrixFormats.hpp"
+#include "MatrixFormat.hpp"
 #include <boost/hana/mult.hpp>
 
 struct CustomLayout : AbstractLayoutProvider<CustomLayout> {
