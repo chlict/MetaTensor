@@ -26,14 +26,13 @@ struct tensor_tag;
 template <typename T>
 constexpr bool is_tensor_type = is_a<tensor_tag, T>;
 
-template<typename ElemType, typename Format, typename Space, typename Addr,
-        typename = std::enable_if_t<
-                is_a<mem_space_tag, Space> &&
-                is_a<tensor_format_tag, Format> &&
-                is_integral_or_constant<Addr>,
-                void> >
+template<typename ElemType, typename Format, typename Space, typename Addr>
 struct Tensor : TensorHandle {
     using tag = tensor_tag;
+
+    static_assert(is_a<mem_space_tag, Space> &&
+            is_a<tensor_format_tag, Format> &&
+            is_integral_or_constant<Addr>);
 
     const Format format_;
     const Addr addr_;

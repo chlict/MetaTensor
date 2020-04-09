@@ -36,3 +36,20 @@ TEST(TestExprCompiler, TestTensorExpr) {
         f();
     });
 }
+
+TEST(TestExprCompiler, Test2) {
+    auto format1 = make_format(Dim2(2_c, 4_c), RowMajorLayout());
+    auto tensor1 = Tensor(float(), format1, MemSpace::GM(), 0x10);
+    auto tensor2 = Tensor(float(), format1, MemSpace::GM(), 0x20);
+
+    using namespace boost::yap::literals;
+    auto expr1 = 1_p + 2_p;
+    auto expr2 = boost::yap::replace_placeholders(expr1, std::move(tensor1), std::move(tensor2));
+    // boost::yap::print(std::cout, expr2);
+
+    auto codes = ECompiler::compile(expr2);
+    hana::for_each(codes, [](auto &&f) {
+        f();
+    });
+
+}
