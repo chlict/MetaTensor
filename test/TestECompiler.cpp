@@ -1,5 +1,5 @@
 #include "gtest/gtest.h"
-#include "ExprCompiler.hpp"
+#include "ECompiler.hpp"
 
 TEST(TestExprCompiler, Test1) {
     auto format1 = make_format(Dim2(2_c, 4_c), RowMajorLayout());
@@ -14,7 +14,7 @@ TEST(TestExprCompiler, Test1) {
     auto term4 = yap::make_terminal(tensor4);
     auto expr1 = term1 + term2 * term3 + term4;
 
-    auto codes = ExprCompiler::compile(expr1);
+    auto codes = ECompiler::compile(expr1);
 
     hana::for_each(codes, [](auto &&f) {
         f();
@@ -30,7 +30,7 @@ TEST(TestExprCompiler, TestTensorExpr) {
 
     auto expr = tensor1 + tensor2 * tensor3 + tensor4;
 
-    auto codes = ExprCompiler::compile(expr);
+    auto codes = ECompiler::compile(expr);
 
     hana::for_each(codes, [](auto &&f) {
         f();

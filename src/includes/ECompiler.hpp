@@ -7,7 +7,7 @@
 #include "xforms/CodeGen.hpp"
 #include <iostream>
 
-struct ExprCompiler {
+struct ECompiler {
     // TODO: check AST type
     template <typename AST>
     static constexpr auto compile(AST &&ast) {

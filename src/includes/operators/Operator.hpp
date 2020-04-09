@@ -75,7 +75,7 @@ struct TOperator {
             auto range0 = tiling1.ranges()[0_c];
             for (unsigned i = (unsigned)range0.start(); i < (unsigned)range0.end(); i += (unsigned)range0.step()) {
 //                auto tile = tensor1.get_tile(i);
-//                auto core = ExprCompiler::compile(expr(tile));
+//                auto core = ECompiler::compile(expr(tile));
                 printf("i = %d\n", i);
             }
         };

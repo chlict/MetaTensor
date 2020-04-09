@@ -3,7 +3,7 @@
 #include "xforms/GenIR.hpp"
 #include "xforms/AllocTensor.hpp"
 #include "xforms/CodeGen.hpp"
-#include "ExprCompiler.hpp"
+#include "ECompiler.hpp"
 
 struct TestCodeGen : public ::testing::Test {
 private:
@@ -78,6 +78,6 @@ TEST_F(TestCodeGen, StaticShape1) {
     auto term3 = yap::make_terminal(tensor3);
     auto expr1 = (term1 + term2) * term3;
 
-    auto codes = ExprCompiler::compile(expr1);
+    auto codes = ECompiler::compile(expr1);
     launch(codes);
 }
