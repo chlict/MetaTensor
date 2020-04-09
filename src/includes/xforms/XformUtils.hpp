@@ -12,6 +12,15 @@ struct StaticTransform {};
 // Trsnsform at runtime
 struct DynamicTransform {};
 
+
+struct with_dump {};
+struct nodump {};
+
+template <typename Dumping>
+constexpr bool need_dump(Dumping dumping) {
+    return std::is_same_v<Dumping, with_dump>;
+}
+
 template <typename T>
 struct is_xform_pass_t : std::integral_constant<bool, is_a<xform_pass_tag, T> > {};
 

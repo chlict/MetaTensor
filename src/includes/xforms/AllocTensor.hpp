@@ -129,12 +129,12 @@ struct SubstituteXform {
 };
 
 struct AllocTensor : StaticTransform {
-    template <typename IRList,
+    template <typename IRList, typename Dumping = nodump,
             typename = std::enable_if_t<
                     hana::is_a<hana::tuple_tag, IRList>,
                     void>
     >
-    constexpr auto transform(IRList &&ir_list) const {
+    constexpr auto transform(IRList &&ir_list, Dumping dumping = nodump{}) const {
         // single ir scanner
         auto fn = [](auto &&map, auto &&ir) -> decltype(auto) {
             return yap::transform(ir, TempScanner(map));
@@ -144,9 +144,16 @@ struct AllocTensor : StaticTransform {
         auto map = hana::fold_left(ir_list, /* init state */ hana::make_map(), fn);
 
         // step2 - substitute the temps
-        return hana::transform(ir_list, [&map](auto const &ir) {
+        auto new_ir_list = hana::transform(ir_list, [&map](auto const &ir) {
             return yap::transform(ir, SubstituteXform(map));
         });
+
+        if constexpr (need_dump(dumping)) {
+            printf("--------IR After AllocTensor:--------\n");
+            print_ir_list_simple(new_ir_list);
+        }
+
+        return new_ir_list;
     }
 };
 

@@ -14,7 +14,7 @@ TEST(TestExprCompiler, Test1) {
     auto term4 = yap::make_terminal(tensor4);
     auto expr1 = term1 + term2 * term3 + term4;
 
-    auto codes = ECompiler::compile(expr1);
+    auto codes = ECompiler::compile(expr1, nodump{});
 
     hana::for_each(codes, [](auto &&f) {
         f();
@@ -30,7 +30,7 @@ TEST(TestExprCompiler, TestTensorExpr) {
 
     auto expr = tensor1 + tensor2 * tensor3 + tensor4;
 
-    auto codes = ECompiler::compile(expr);
+    auto codes = ECompiler::compile(expr, nodump{});
 
     hana::for_each(codes, [](auto &&f) {
         f();
@@ -44,10 +44,7 @@ TEST(TestExprCompiler, Test2) {
 
     using namespace boost::yap::literals;
     auto expr1 = 1_p + 2_p;
-    auto expr2 = boost::yap::replace_placeholders(expr1, std::move(tensor1), std::move(tensor2));
-    // boost::yap::print(std::cout, expr2);
-
-    auto codes = ECompiler::compile(expr2);
+    auto codes = ECompiler::compile(1_p + 2_p, nodump{}, tensor1, tensor2);
     hana::for_each(codes, [](auto &&f) {
         f();
     });
