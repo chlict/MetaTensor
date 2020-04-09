@@ -41,7 +41,7 @@ TEST(TestDims, Test4) {
 
 TEST(TestDims, Test5) {
     auto constexpr dims1 = Dim4(1, 2, 3, 4);
-    auto constexpr dims2 = Dim4(dims1);
+    auto constexpr dims2 = Dims(dims1);
 
     static_assert(dims1.dim[0_c] == dims2.dim[0_c]);
     static_assert(dims1.dim[1_c] == dims2.dim[1_c]);
@@ -74,3 +74,18 @@ TEST(TestDims, Test6) {
     static_assert(d4.dim[1_c] == 40_c);
 }
 
+TEST(TestDims, Test7) {
+    auto d1 = Dim2(10_c, 20_c);
+    auto d2 = copy1(d1);
+    static_assert(d1.dim == d2.dim);
+
+    auto d3 = copy2(d1);
+    static_assert(d1.dim == d3.dim);
+
+    auto d4 = add1(d1, d2);
+    static_assert(d4.dim[0_c] == 20_c);
+    static_assert(d4.dim[1_c] == 40_c);
+
+    auto d5 = Dim2(20_c, 40_c);
+    static_assert(d4.dim[0_c] == d5.dim[0_c]);
+}
