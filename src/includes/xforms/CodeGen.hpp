@@ -64,3 +64,10 @@ struct CodeGen : StaticTransform {
         return codes;
     }
 };
+
+auto launch = [](auto &&codes) {
+    static_assert(is_hana_tuple_type<std::remove_reference_t<decltype(codes)> >);
+    hana::for_each(codes, [](auto &&fn) {
+        fn();
+    });
+};

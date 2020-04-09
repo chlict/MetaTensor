@@ -76,6 +76,15 @@ TEST_F(TestCodeGen, StaticShape1) {
     auto term3 = yap::make_terminal(tensor3);
     auto expr1 = (term1 + term2) * term3;
 
-    auto codes = ECompiler::compile(expr1, with_dump{});
+    auto gen = yap::transform(expr1, GenIRXform{hana::make_tuple(), hana::make_tuple()});
+    printf("After GenIR:\n");
+    print_ir_list_simple(gen.mIRList);
+
+    auto at = AllocTensor();
+    auto ir2 = at.transform(gen.mIRList, with_dump());
+
+    auto codes = hana::transform(ir2, [](auto &&ir) {
+        return yap::transform(ir, CodeGenXform());
+    });
     launch(codes);
 }

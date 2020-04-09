@@ -14,14 +14,12 @@ TEST(TestExprCompiler, Test1) {
     auto term4 = yap::make_terminal(tensor4);
     auto expr1 = term1 + term2 * term3 + term4;
 
-    auto codes = ECompiler::compile(expr1, nodump{});
-
-    hana::for_each(codes, [](auto &&f) {
-        f();
-    });
+    auto codes = ECompiler(expr1, with_dump()).compile();
+    launch(codes);
 }
 
-TEST(TestExprCompiler, TestTensorExpr) {
+// Use TensorE instead of yap::make_terminal
+TEST(TestExprCompiler, Test2) {
     auto format1 = make_format(Dim2(2_c, 4_c), RowMajorLayout());
     auto tensor1 = TensorE(float(), format1, MemSpace::GM(), 0x10);
     auto tensor2 = TensorE(float(), format1, MemSpace::GM(), 0x20);
@@ -30,23 +28,40 @@ TEST(TestExprCompiler, TestTensorExpr) {
 
     auto expr = tensor1 + tensor2 * tensor3 + tensor4;
 
-    auto codes = ECompiler::compile(expr, nodump{});
-
-    hana::for_each(codes, [](auto &&f) {
-        f();
-    });
+    auto kernel = ECompiler(expr).compile();
+    launch(kernel);
 }
 
-TEST(TestExprCompiler, Test2) {
-    auto format1 = make_format(Dim2(2_c, 4_c), RowMajorLayout());
+// Use placeholder and tensor as arguments
+TEST(TestExprCompiler, Test3) {
+    auto format1 = make_format(Dim2(2, 4), RowMajorLayout());
     auto tensor1 = Tensor(float(), format1, MemSpace::GM(), 0x10);
     auto tensor2 = Tensor(float(), format1, MemSpace::GM(), 0x20);
+    auto tensor3 = Tensor(float(), format1, MemSpace::GM(), 0x30);
+    auto tensor4 = Tensor(float(), format1, MemSpace::GM(), 0x40);
 
     using namespace boost::yap::literals;
-    auto expr1 = 1_p + 2_p;
-    auto codes = ECompiler::compile(1_p + 2_p, nodump{}, tensor1, tensor2);
-    hana::for_each(codes, [](auto &&f) {
-        f();
-    });
 
+    auto expr = 1_p + 2_p * 3_p;
+    auto kernel = ECompiler(expr).compile(tensor1, tensor2, tensor3);
+    launch(kernel);
+}
+
+// Use lambda
+TEST(TestExprCompiler, Test4) {
+    auto format1 = make_format(Dim2(2, 4), RowMajorLayout());
+    auto tensor1 = Tensor(float(), format1, MemSpace::GM(), 0x10);
+    auto tensor2 = Tensor(float(), format1, MemSpace::GM(), 0x20);
+    auto tensor3 = Tensor(float(), format1, MemSpace::GM(), 0x30);
+    auto tensor4 = Tensor(float(), format1, MemSpace::GM(), 0x40);
+
+    using namespace boost::yap::literals;
+
+    auto expr = 1_p + 2_p * 3_p;
+    auto add_mul = [expr](auto &&... args) {
+        auto kernel = ECompiler(expr).compile(args...);
+        launch(kernel);
+    };
+
+    add_mul(tensor1, tensor2, tensor3);
 }

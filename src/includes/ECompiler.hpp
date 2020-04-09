@@ -7,15 +7,30 @@
 #include "xforms/CodeGen.hpp"
 #include <iostream>
 
-struct ECompiler {
-    template <typename Expr, typename Dumping, typename ...Args>
-    static constexpr auto compile(Expr &&expr, Dumping dumping, Args && ...args) {
-        static_assert(is_yap_expr_type<std::remove_reference_t<Expr>>);
-        static_assert(std::is_same_v<Dumping, with_dump> || std::is_same_v<Dumping, nodump>);
+struct ecompiler_tag;
 
+template <typename T>
+constexpr bool is_ecompiler_type = is_a<ecompiler_tag, T>;
+
+template <typename Expr, typename Dumping = nodump>
+struct ECompiler {
+    static_assert(is_yap_expr_type<Expr>);
+    static_assert(std::is_same_v<Dumping, with_dump> || std::is_same_v<Dumping, nodump>);
+
+    const Expr expr_;
+
+    constexpr ECompiler(Expr const &expr, Dumping = nodump{}) : expr_(expr) {}
+
+    constexpr ECompiler(ECompiler const &other) : expr_(other.expr_) {}
+
+    constexpr ECompiler(ECompiler &&other) : expr_(other.expr_) {}
+
+    template <typename ...Args>
+    constexpr auto compile(Args &&... args) const {
         // First replace all the placeholders in expr with args
-        auto ast = yap::replace_placeholders(std::forward<Expr>(expr), std::forward<Args>(args)...);
+        auto ast = yap::replace_placeholders(expr_, std::forward<Args>(args)...);
         static_assert(is_yap_expr_type<decltype(ast)>);
+        auto constexpr dumping = Dumping();
         if constexpr (need_dump(dumping)) {
             yap::print(std::cout, ast);
         }
