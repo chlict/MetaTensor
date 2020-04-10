@@ -80,7 +80,7 @@ struct TCalculator {
             for (unsigned i = (unsigned)range0.begin(); i < (unsigned)range0.end(); i += (unsigned)range0.step()) {
 //                auto tile = tensor1.get_tile(i);
                 auto core = compiler.compile(tensor1, tensor1);
-                execute(core);
+                core();
             }
         };
         return codes;

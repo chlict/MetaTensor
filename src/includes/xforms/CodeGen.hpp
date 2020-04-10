@@ -54,29 +54,29 @@ struct CodeGen : StaticTransform {
     constexpr auto transform(IRList &&irlist, Dumping dumping) const {
         static_assert(is_hana_tuple_type<std::remove_reference_t<IRList> >);
 
-        auto codes = hana::transform(irlist, [](auto &&ir) {
+        auto code_list = hana::transform(irlist, [](auto &&ir) {
             return yap::transform(ir, CodeGenXform());
         });
 
         if constexpr(need_dump(dumping)) {
             // How to dump codes?
         }
-        return codes;
+
+        // Returns a big lambda wrapping each stmt's small lambda
+        return [code_list]() {
+            hana::for_each(code_list, [](auto &&fn) {
+                fn();
+            });
+        };
     }
 };
 
 // Simulate launching a kernel to execute on device
 auto launch = [](auto &&codes) {
-    static_assert(is_hana_tuple_type<std::remove_reference_t<decltype(codes)> >);
-    hana::for_each(codes, [](auto &&fn) {
-        fn();
-    });
+    codes();
 };
 
-// Simulate exeute in place
+// Simulate exeuting in place
 auto execute = [](auto &&codes) {
-    static_assert(is_hana_tuple_type<std::remove_reference_t<decltype(codes)> >);
-    hana::for_each(codes, [](auto &&fn) {
-        fn();
-    });
+    codes();
 };

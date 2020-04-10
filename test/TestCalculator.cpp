@@ -31,7 +31,8 @@ TEST(TestOperator, Test2) {
 
     using namespace boost::yap::literals;
     auto expr = 1_p + 2_p;
-    auto t_operator = TCalculator(boost::hana::make_tuple(src1), dest, expr);
-    auto code = t_operator.gen_code();
+    auto calc = TCalculator(boost::hana::make_tuple(src1), dest, expr);
+    auto code = calc.gen_code();
     code();
+//    tensor1.tileWith(tiling), tensor2.tileWith(tiling2) | 1_p + 2_p
 }
