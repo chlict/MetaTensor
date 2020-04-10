@@ -1,8 +1,9 @@
 #pragma once
 
-#include <Tensor.hpp>
-#include "boost/hana.hpp"
+#include <boost/hana.hpp>
+#include "Tensor.hpp"
 #include "Tiling.hpp"
+#include "ECompiler.hpp"
 
 struct toperand_tag;
 
@@ -36,29 +37,28 @@ struct TOperand {
     }
 };
 
-struct toperator_tag;
+struct tcalculator_tag;
 
 template <typename T>
-constexpr bool is_topertor_type = is_a<toperator_tag, T>;
+constexpr bool is_tcalculator_type = is_a<tcalculator_tag, T>;
 
-// TODO: check type
 template<typename Inputs, typename Output, typename Expr>
-struct TOperator {
-    using tag = toperator_tag;
-
+struct TCalculator {
     static_assert(is_hana_tuple_type<Inputs> && is_toperand_type<Output> && is_yap_expr_type<Expr>);
+
+    using tag = tcalculator_tag;
 
     const Inputs inputs_;
     const Output output_;
     const Expr   expr_;
 
-    constexpr TOperator(Inputs const &inputs, Output const &output, Expr const &expr) :
+    constexpr TCalculator(Inputs const &inputs, Output const &output, Expr const &expr) :
         inputs_(inputs), output_(output), expr_(expr) {}
 
-    constexpr TOperator(TOperator const &other) :
+    constexpr TCalculator(TCalculator const &other) :
             inputs_(other.inputs_), output_(other.output_), expr_(other.expr_) {}
 
-    constexpr TOperator(TOperator &&other) :
+    constexpr TCalculator(TCalculator &&other) :
             inputs_(other.inputs_), output_(other.output_), expr_(other.expr_) {}
 
     constexpr auto gen_copy_in() const {}
@@ -66,23 +66,24 @@ struct TOperator {
     constexpr auto gen_copy_out() const {}
 
     constexpr auto gen_code() const {
-        auto src1 = inputs_[0_c];
-        static_assert(is_a<toperand_tag>(src1));
-        auto codes = [src1]() {
-            // auto expr = 1_p + 2_p;
-            auto tensor1 = src1.tensor();
-            auto tiling1 = src1.tiling();
+        auto input1 = inputs_[0_c];
+        static_assert(is_a<toperand_tag>(input1));
+
+        auto codes = [input1]() {
+            using namespace boost::yap::literals;
+            // TODO: add constexpr to make sure all these occurred at compile time in case this is executed on device
+            auto expr = 1_p + 2_p;
+            auto tensor1 = input1.tensor();
+            auto tiling1 = input1.tiling();
             auto range0 = tiling1.ranges()[0_c];
-            for (unsigned i = (unsigned)range0.start(); i < (unsigned)range0.end(); i += (unsigned)range0.step()) {
+            auto compiler = ECompiler(expr);
+            for (unsigned i = (unsigned)range0.begin(); i < (unsigned)range0.end(); i += (unsigned)range0.step()) {
 //                auto tile = tensor1.get_tile(i);
-//                auto core = ECompiler::compile(expr(tile));
-                printf("i = %d\n", i);
+                auto core = compiler.compile(tensor1, tensor1);
+                execute(core);
             }
         };
         return codes;
-    }
-
-    constexpr auto execute() const {
     }
 
 };
@@ -91,5 +92,5 @@ struct TOperator {
 //auto inputs = hana::make_tuple(tensor1);
 //auto output = tensor2;
 //auto tiling = hana::make_tuple()
-//auto add = TOperator(expr, inputs, output, tiling, padding);
+//auto add = TCalculator(expr, inputs, output, tiling, padding);
 //add.execute();

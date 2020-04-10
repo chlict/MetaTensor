@@ -65,7 +65,16 @@ struct CodeGen : StaticTransform {
     }
 };
 
+// Simulate launching a kernel to execute on device
 auto launch = [](auto &&codes) {
+    static_assert(is_hana_tuple_type<std::remove_reference_t<decltype(codes)> >);
+    hana::for_each(codes, [](auto &&fn) {
+        fn();
+    });
+};
+
+// Simulate exeute in place
+auto execute = [](auto &&codes) {
     static_assert(is_hana_tuple_type<std::remove_reference_t<decltype(codes)> >);
     hana::for_each(codes, [](auto &&fn) {
         fn();

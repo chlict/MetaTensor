@@ -2,7 +2,7 @@
 #include <boost/hana.hpp>
 #include <boost/yap/yap.hpp>
 #include <boost/yap/expression.hpp>
-#include "operators/Operator.hpp"
+#include "Calculator.hpp"
 
 
 TEST(TestOperator, Test1) {
@@ -31,7 +31,7 @@ TEST(TestOperator, Test2) {
 
     using namespace boost::yap::literals;
     auto expr = 1_p + 2_p;
-    auto t_operator = TOperator(boost::hana::make_tuple(src1), dest, expr);
+    auto t_operator = TCalculator(boost::hana::make_tuple(src1), dest, expr);
     auto code = t_operator.gen_code();
     code();
 }
