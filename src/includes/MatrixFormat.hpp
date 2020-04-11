@@ -17,17 +17,16 @@ struct RowMajorLayout : AbstractLayoutProvider<RowMajorLayout> {
     }
 
     template <typename View>
-    constexpr auto view_to_shape(View &&view) const {
+    static constexpr auto view_to_shape(View &&view) {
         static_assert(std::remove_reference_t<View>::nDims == 2, "Matrix expected");
         return Dims(view.dim[1_c], view.dim[0_c]);
     }
 
     template <typename Shape>
-    constexpr auto shape_to_strides(Shape &&shape) const {
+    static constexpr auto shape_to_strides(Shape &&shape) {
         static_assert(std::remove_reference_t<Shape>::nDims == 2, "Matrix expected");
         return Dims(1_c, shape.dim[0_c]);
     }
-
 };
 
 // Do layout for column-major stored matrix
@@ -45,13 +44,13 @@ struct ColMajorLayout : AbstractLayoutProvider<ColMajorLayout> {
     }
 
     template <typename View>
-    constexpr auto view_to_shape(View &&view) const {
+    static constexpr auto view_to_shape(View &&view) {
         static_assert(std::remove_reference_t<View>::nDims == 2, "Matrix expected");
         return Dims(view.dim[0_c], view.dim[1_c]);
     }
 
     template <typename Shape>
-    constexpr auto shape_to_strides(Shape &&shape) const {
+    static constexpr auto shape_to_strides(Shape &&shape) {
         static_assert(std::remove_reference_t<Shape>::nDims == 2, "Matrix expected");
         return Dims(1_c, shape.dim[0_c]);
     }
