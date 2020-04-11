@@ -10,14 +10,17 @@ struct tensor_format_tag {};
 
 // View represents a logical shape. E.g. a fractal tensor may have a view of Dim2(width, height) like a matrix
 // but the underlying layout has a Dim4 shape.
-template<typename View, typename Layout>
+// LayoutProvider can be retrieved from format_traits
+template<typename View, typename Layout, typename LayoutProvider>
 struct TensorFormat {
-    View view_;
-    Layout layout_;
+    static_assert(is_dims_type<View> && is_layout_type<Layout>);
 
     using tag = tensor_format_tag;
 
-    constexpr TensorFormat(View view, Layout layout) :
+    View view_;
+    Layout layout_;
+
+    constexpr TensorFormat(View const &view, Layout const &layout) :
             view_(view), layout_(layout) {}
 
     constexpr TensorFormat(TensorFormat const &other) noexcept :
@@ -25,8 +28,8 @@ struct TensorFormat {
             layout_(other.layout_) {}
 
     constexpr TensorFormat(TensorFormat &&other) noexcept :
-            view_(std::forward<TensorFormat>(other.view_),
-                  layout_(std::forward<TensorFormat>(other.layout_))) {}
+            view_(other.view_),
+            layout_(other.layout_) {}
 
     constexpr auto view() const {
         return view_;
@@ -52,7 +55,7 @@ template <typename View, typename LayoutProvider,
                 void> >
 constexpr auto make_format(View view, AbstractLayoutProvider<LayoutProvider> const &layout_provider) {
     auto layout = layout_provider(view);
-    return TensorFormat<View, decltype(layout)>(view, layout);
+    return TensorFormat<View, decltype(layout), LayoutProvider>(view, layout);
 }
 
 template <typename Dim0, typename Dim1, typename LayoutProvider,
@@ -62,7 +65,15 @@ template <typename Dim0, typename Dim1, typename LayoutProvider,
                 is_a<layout_provider_tag, LayoutProvider>,
                 void> >
 constexpr auto make_format(Dim0 dim0, Dim1 dim1, AbstractLayoutProvider<LayoutProvider> const &layout_provider) {
-    return make_format(Dims(dim0, dim1), layout_provider);
+    return make_format(Dim2(dim0, dim1), layout_provider);
 }
 
+template <typename T>
+struct format_traits;
 
+template <typename View, typename Layout, typename LayoutProvider>
+struct format_traits<TensorFormat<View, Layout, LayoutProvider>> {
+    using view_type = View;
+    using layout_type = Layout;
+    using layout_provider_type = LayoutProvider;
+};

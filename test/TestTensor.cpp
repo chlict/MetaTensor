@@ -51,3 +51,10 @@ TEST(TestTensor, Test3) {
     std::cout << th << std::endl;
     std::cout << tensor2 << std::endl;
 }
+
+TEST(TestTensor, Test4) {
+    auto format1 = make_format(Dims(2_c, 4_c), RowMajorLayout());
+    auto tensor1 = Tensor(float(), format1, MemSpace::GM(), 0x1000);
+
+    tensor1.slice(Dim2(0_c, 0_c), Dim2(2_c, 4_c));
+}

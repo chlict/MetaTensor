@@ -7,6 +7,9 @@ namespace hana = boost::hana;
 
 struct dims_tag {};
 
+template <typename T>
+constexpr bool is_dims_type = is_a<dims_tag, T>;
+
 template <typename ...T>
 struct Dims {
     using tag = dims_tag;

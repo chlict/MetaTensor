@@ -56,6 +56,20 @@ struct Tensor : TensorHandle {
 
     constexpr auto strides() const { return format_.strides(); }
 
+    template <typename Pos, typename SliceView>
+    constexpr auto slice(Pos &&pos, SliceView &&slice_view) const {
+        using view_type = typename format_traits<Format>::view_type;
+        static_assert(is_dims_type<Pos> && is_dims_type<SliceView>);
+        static_assert(Pos::nDims == view_type::nDims && SliceView::nDims == view_type::nDims);
+        // assert(pos within view && slice_view within view);
+
+        // layout is same as original layout
+        using layout_provider_type = typename format_traits<Format>::layout_provider_type;
+        auto slice_format = make_format(std::forward<SliceView>(slice_view), layout_provider_type());
+
+//        auto slice_addr = addr() + format_.offset(pos);
+    }
+
     friend std::ostream& operator << (std::ostream &os, Tensor tensor) {
         os << "Tensor@0x" << std::hex << tensor.addr() << std::dec;
         return os;
