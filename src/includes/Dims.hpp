@@ -33,6 +33,12 @@ struct Dims {
     static constexpr auto nDims = sizeof...(T);
 };
 
+template <typename D0>
+constexpr auto Dim1(D0 d0) {
+    static_assert(is_integral_or_constant<D0>);
+    return Dims(d0);
+}
+
 template <typename D0, typename D1>
 constexpr auto Dim2(D0 d0, D1 d1) {
     static_assert(is_integral_or_constant<D0> && is_integral_or_constant<D1>);

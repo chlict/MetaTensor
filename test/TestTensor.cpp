@@ -53,8 +53,17 @@ TEST(TestTensor, Test3) {
 }
 
 TEST(TestTensor, Test4) {
-    auto format1 = make_format(Dims(2_c, 4_c), RowMajorLayout());
-    auto tensor1 = Tensor(float(), format1, MemSpace::GM(), 0x1000);
+    auto format = make_format(Dims(2_c, 4_c), RowMajorLayout());
+    auto tensor = Tensor(float(), format, MemSpace::GM(), 0x1000);
+    auto layout = tensor.layout();
+    auto shape = layout.shape();
+    auto strides = layout.strides();
 
-    tensor1.slice(Dim2(0_c, 0_c), Dim2(2_c, 4_c));
+    auto tile1 = tensor.get_tile(Dim2(0_c, 0_c), Dim2(2_c, 4_c));
+    auto tile1_layout = tile1.layout();
+    auto tile1_shape = tile1_layout.shape();
+    auto tile1_strides = tile1_layout.strides();
+    static_assert(shape.dim == tile1_shape.dim);
+    static_assert(strides.dim == tile1_strides.dim);
+    assert(tile1.addr() == tensor.addr());
 }

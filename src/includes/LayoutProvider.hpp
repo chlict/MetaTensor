@@ -26,7 +26,7 @@ struct AbstractLayoutProvider {
 
     template <typename Pos, typename Layout>
     static constexpr auto offset(Pos &&pos, Layout &&layout) {
-        static_assert(is_dims_type<std::remove_reference_t<Pos> > && std::remove_reference_t<Pos>::nDims == 2);
+        static_assert(is_dims_type<std::remove_reference_t<Pos> >);
         static_assert(is_layout_type<std::remove_reference_t<Layout> >);
         auto dimensions = view_to_shape(std::forward<Pos>(pos));
         auto strides = layout.strides();
@@ -40,8 +40,6 @@ struct AbstractLayoutProvider {
         return hana::fold(
                 hana::zip_with(hana::mult, dimensions.dim, strides.dim),
                 hana::plus);
-//        auto a = hana::zip_with(hana::mult, dimensions.dim, strides.dim);
-//        return dimensions.dim[0_c] * strides.dim[0_c] + dimensions.dim[1_c] * strides.dim[1_c];
     }
 
 };

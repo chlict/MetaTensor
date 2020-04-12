@@ -57,17 +57,26 @@ struct Tensor : TensorHandle {
     constexpr auto strides() const { return format_.strides(); }
 
     template <typename Pos, typename SliceView>
-    constexpr auto slice(Pos &&pos, SliceView &&slice_view) const {
+    constexpr auto get_tile(Pos &&pos, SliceView &&slice_view) const {
         using view_type = typename format_traits<Format>::view_type;
         static_assert(is_dims_type<Pos> && is_dims_type<SliceView>);
         static_assert(Pos::nDims == view_type::nDims && SliceView::nDims == view_type::nDims);
         // assert(pos within view && slice_view within view);
 
         // layout is same as original layout
-        using layout_provider_type = typename format_traits<Format>::layout_provider_type;
-        auto slice_format = make_format(std::forward<SliceView>(slice_view), layout_provider_type());
-
-//        auto slice_addr = addr() + format_.offset(pos);
+        using LayoutProvider = typename format_traits<Format>::layout_provider_type;
+        auto tile_format = make_format(std::forward<SliceView>(slice_view), LayoutProvider());
+        auto offset = LayoutProvider::offset(std::forward<Pos>(pos), layout());
+        if constexpr (hana::is_a<hana::integral_constant_tag<long long>>(offset)
+            && hana::is_a<hana::integral_constant_tag<long long>, Addr>) {
+            auto tile_addr = addr() + offset * hana::llong_c<sizeof(ElemType)>;
+            return Tensor<ElemType, decltype(tile_format), Space, decltype(tile_addr)>(
+                    ElemType(), tile_format, Space(), tile_addr);
+        } else {
+            auto tile_addr = (uint64_t)addr() + sizeof(ElemType) * (uint64_t)offset;
+            return Tensor<ElemType, decltype(tile_format), Space, decltype(tile_addr)>(
+                    ElemType(), tile_format, Space(), tile_addr);
+        }
     }
 
     friend std::ostream& operator << (std::ostream &os, Tensor tensor) {

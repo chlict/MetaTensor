@@ -63,8 +63,8 @@ struct TAdd {
         auto addr_src1 = src1_.addr();
         auto addr_src2 = src2_.addr();
 
-        auto view1_sum = src1_.format().view().dim[0_c] + src1_.format().view().dim[1_c];
-        auto view2_sum = src1_.format().view().dim[0_c] + src1_.format().view().dim[1_c];
+        auto view1_sum = src1_.format().view().dim[0_c];
+        auto view2_sum = src1_.format().view().dim[0_c];
         auto view_sum = (int)(view1_sum + view2_sum);
 
         auto fn = [addr_dest, addr_src1, addr_src2, view_sum]() {
