@@ -29,11 +29,11 @@ struct VectorTilingProvider : AbstractTilingProvider<VectorTilingProvider> {
         static_assert(decltype(tensor_view)::nDims == 1 && decltype(dim_orders)::nDims == 1);
 
         auto tiling_range = tiling.ranges()[0_c];
-        int b = tiling_range.begin();
-        int e = tiling_range.end();
+        auto b = tiling_range.begin();
+        auto e = tiling_range.end();
         int step = tiling_range.step();
-        auto indicies = ranges::view::ints(b, e) | ranges::view::filter([step](int x) { return x / step == 0; });
-        return indicies;
+        auto indices = ranges::views::ints((int)b, (int)e) | ranges::views::filter([step](int x) { return x / step == 0; });
+        return indices;
     }
 
     template <typename Index>
