@@ -81,3 +81,7 @@ constexpr bool is_hana_tuple_type = boost::hana::is_a<boost::hana::tuple_tag, T>
 
 template <typename T>
 constexpr bool is_yap_expr_type = boost::yap::is_expr<T>::value;
+
+auto int_ceil = [](auto &&a, auto &&b) {
+    return (a % b) == 0 ? (a / b) : (a / b) + 1;
+};

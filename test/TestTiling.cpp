@@ -3,6 +3,7 @@
 #include "gtest/gtest.h"
 #include "TTiling.hpp"
 #include "VectorFormat.hpp"
+#include "MatrixTilingProvider.hpp"
 
 TEST(TestTiling, Test1) {
     auto range1 = TRange(0_c, 4_c, 2_c, 1_c);
@@ -63,5 +64,22 @@ TEST(TestTiling, Test4) {
         auto tile = tensor.get_tile(pos, shape);
 //        std::cout << tile << std::endl;
         assert(tile.addr() == 0x1000 + sizeof(float) * pos.dim[0_c]);
+    }
+}
+
+// Zero-cost expected
+TEST(TestTiling, Test5) {
+    auto format = make_format(Dim2(4_c, 6_c), RowMajorLayout());
+    auto tensor = Tensor(float(), format, MemSpace::GM(), 0x1000);
+    auto provider = RowMajorTiling();
+
+    auto tiling = Tiling2DRowMajor(TRange(0_c, 4_c, 2_c), TRange(0_c, 6_c, 2_c));
+    auto indices = provider.gen_tiling_indices(tensor, tiling);
+    for (auto i : indices) {
+        auto pos = provider.index_to_pos(i);
+        auto tile_shape = Dim2(2_c, 2_c);
+        auto tile = tensor.get_tile(pos, tile_shape);
+        std::cout << tile << std::endl;
+            // printf("[%d, %d]\n", std::get<0>(i), std::get<1>(i));
     }
 }
