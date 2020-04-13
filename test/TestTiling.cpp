@@ -1,4 +1,5 @@
 #include <Tensor.hpp>
+#include <TilingProvider.hpp>
 #include "gtest/gtest.h"
 #include "TTiling.hpp"
 #include "VectorFormat.hpp"
@@ -45,4 +46,22 @@ TEST(TestTiling, Test3) {
     using namespace boost::yap::literals;
     auto expr = 1_p + 2_p;
     tiling1d.apply(tensor, expr);
+}
+
+// Zero-cost expected
+TEST(TestTiling, Test4) {
+    auto format = make_format(Dim1(100_c), VectorLayout());
+    auto tensor = Tensor(float(), format, MemSpace::GM(), 0x1000);
+
+    auto tiling = Tiling1D(TRange(0_c, 100_c, 2_c, 1_c));
+    auto tp = VectorTilingProvider();
+
+    auto indices = tp.gen_tiling_indices(tensor, tiling);
+    for (auto i : indices) {
+        auto pos = tp.index_to_pos(i);
+        auto shape = Dim1(1_c);
+        auto tile = tensor.get_tile(pos, shape);
+//        std::cout << tile << std::endl;
+        assert(tile.addr() == 0x1000 + sizeof(float) * pos.dim[0_c]);
+    }
 }

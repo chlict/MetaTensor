@@ -59,8 +59,10 @@ struct Tensor : TensorHandle {
     template <typename Pos, typename SliceView>
     constexpr auto get_tile(Pos &&pos, SliceView &&slice_view) const {
         using view_type = typename format_traits<Format>::view_type;
-        static_assert(is_dims_type<Pos> && is_dims_type<SliceView>);
-        static_assert(Pos::nDims == view_type::nDims && SliceView::nDims == view_type::nDims);
+        static_assert(is_dims_type<std::remove_reference_t<Pos> > &&
+                      is_dims_type<std::remove_reference_t<SliceView> >);
+        static_assert(std::remove_reference_t<Pos>::nDims == view_type::nDims &&
+                      std::remove_reference_t<SliceView>::nDims == view_type::nDims);
         // assert(pos within view && slice_view within view);
 
         // layout is same as original layout

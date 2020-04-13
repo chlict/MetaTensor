@@ -2,6 +2,7 @@
 
 #include <range/v3/all.hpp>
 #include "Dims.hpp"
+#include "TTiling.hpp"
 
 struct tiling_provider_tag {};
 
@@ -45,7 +46,7 @@ struct VectorTilingProvider : AbstractTilingProvider<VectorTilingProvider> {
 
     template <typename Index>
     static constexpr auto index_to_pos(Index const &i) {
-        static_assert(std::is_same_v<Index, int>);
+        static_assert(std::is_integral_v<Index>);
         return Dim1(i);
     }
 };

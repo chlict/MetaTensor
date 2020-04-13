@@ -3,6 +3,7 @@
 #include <boost/hana.hpp>
 #include "Tensor.hpp"
 #include "TTiling.hpp"
+#include "TilingProvider.hpp"
 #include "ECompiler.hpp"
 
 struct toperand_tag;
