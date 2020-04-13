@@ -115,15 +115,23 @@ struct TCalculator {
 
         auto codes = [input1, output, expr]() {
             // TODO: add constexpr to make sure all these occurred at compile time in case this is executed on device
-            auto tensor1 = input1.tensor();
-            auto tiling1 = input1.tiling();
-            auto range0 = tiling1.ranges()[0_c];
-            auto compiler = ECompiler(expr);
-            for (unsigned i = (unsigned)range0.begin(); i < (unsigned)range0.end(); i += (unsigned)range0.step()) {
-//                auto tile = tensor1.get_tile(i);
-                auto core = compiler.compile(tensor1, tensor1);
-                core();
-            }
+//            auto tensor1 = input1.tensor();
+//            auto tiling1 = input1.tiling_provider();
+//            auto indices1 = tiling1.gen_tiling_indices(tensor1);
+//
+//            auto tensor2 = output.tensor();
+//            auto tiling2 = output.tiling_provider();
+//            auto indices2 = tiling2.gen_tiling_indices(tensor2);
+//            auto compiler = ECompiler(expr);
+//            auto index = views::zip(indices1, indices2);
+//            for (auto i : index) {
+//                auto pos1 = tiling1.index_to_pos(std::get<0>(i));
+//                auto pos2 = tiling2.index_to_pos(std::get<1>(i));
+//                auto tile1 = tensor1.get_tile(pos1, shape1);
+//                auto tile2 = tensor2.get_tile(pos2, shape2);
+//                auto core = compiler.compile(tile1, tile2);
+//                core();
+//            }
         };
         return codes;
     }
