@@ -48,7 +48,7 @@ struct Tensor : TensorHandle {
 
     constexpr auto addr() const { return addr_; }
 
-    constexpr auto view() const { return format_.view(); }
+    constexpr auto shape() const { return format_.shape(); }
 
     constexpr auto layout() const { return format_.layout(); }
 
@@ -56,18 +56,18 @@ struct Tensor : TensorHandle {
 
     constexpr auto strides() const { return format_.strides(); }
 
-    template <typename Pos, typename SliceView>
-    constexpr auto get_tile(Pos &&pos, SliceView &&slice_view) const {
-        using view_type = typename format_traits<Format>::view_type;
+    template <typename Pos, typename TileShape>
+    constexpr auto get_tile(Pos &&pos, TileShape &&tile_shape) const {
+        using shape_type = typename format_traits<Format>::shape_type;
         static_assert(is_dims_type<std::remove_reference_t<Pos> > &&
-                      is_dims_type<std::remove_reference_t<SliceView> >);
-        static_assert(std::remove_reference_t<Pos>::nDims == view_type::nDims &&
-                      std::remove_reference_t<SliceView>::nDims == view_type::nDims);
-        // assert(pos within view && slice_view within view);
+                      is_dims_type<std::remove_reference_t<TileShape> >);
+        static_assert(std::remove_reference_t<Pos>::nDims == shape_type::nDims &&
+                      std::remove_reference_t<TileShape>::nDims == shape_type::nDims);
+        // assert(pos within shape && tile_shape within shape);
 
         // layout is same as original layout
         using LayoutProvider = typename format_traits<Format>::layout_provider_type;
-        auto tile_format = make_format(std::forward<SliceView>(slice_view), LayoutProvider());
+        auto tile_format = make_format(std::forward<TileShape>(tile_shape), LayoutProvider());
         auto offset = LayoutProvider::offset(std::forward<Pos>(pos), layout());
         if constexpr (hana::is_a<hana::integral_constant_tag<long long>>(offset)
             && hana::is_a<hana::integral_constant_tag<long long>, Addr>) {

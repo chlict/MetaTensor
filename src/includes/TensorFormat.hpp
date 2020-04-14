@@ -8,31 +8,31 @@
 
 struct tensor_format_tag {};
 
-// View represents a logical shape. E.g. a fractal tensor may have a view of Dim2(width, height) like a matrix
-// but the underlying layout has a Dim4 shape.
+// View represents a logical shape. E.g. a fractal tensor may have a Dim2(width, height)
+// shape like a matrix, but the underlying layout has a Dim4 shape (dimensions).
 // LayoutProvider can be retrieved from format_traits
-template<typename View, typename Layout, typename LayoutProvider>
+template<typename Shape, typename Layout, typename LayoutProvider>
 struct TensorFormat {
-    static_assert(is_dims_type<View> && is_layout_type<Layout>);
+    static_assert(is_dims_type<Shape> && is_layout_type<Layout>);
 
     using tag = tensor_format_tag;
 
-    View view_;
+    Shape shape_;
     Layout layout_;
 
-    constexpr TensorFormat(View const &view, Layout const &layout) :
-            view_(view), layout_(layout) {}
+    constexpr TensorFormat(Shape const &shape, Layout const &layout) :
+            shape_(shape), layout_(layout) {}
 
     constexpr TensorFormat(TensorFormat const &other) noexcept :
-            view_(other.view_),
+            shape_(other.shape_),
             layout_(other.layout_) {}
 
     constexpr TensorFormat(TensorFormat &&other) noexcept :
-            view_(other.view_),
+            shape_(other.shape_),
             layout_(other.layout_) {}
 
-    constexpr auto view() const {
-        return view_;
+    constexpr auto shape() const {
+        return shape_;
     }
 
     constexpr auto layout() const {
@@ -48,14 +48,14 @@ struct TensorFormat {
     }
 };
 
-// TODO: View &&view
-template <typename View, typename LayoutProvider,
+// TODO: Shape &&shape
+template <typename Shape, typename LayoutProvider,
         typename = std::enable_if_t<
                 is_a<layout_provider_tag, LayoutProvider>,
                 void> >
-constexpr auto make_format(View view, AbstractLayoutProvider<LayoutProvider> const &layout_provider) {
-    auto layout = layout_provider(view);
-    return TensorFormat<View, decltype(layout), LayoutProvider>(view, layout);
+constexpr auto make_format(Shape shape, AbstractLayoutProvider<LayoutProvider> const &layout_provider) {
+    auto layout = layout_provider(shape);
+    return TensorFormat<Shape, decltype(layout), LayoutProvider>(shape, layout);
 }
 
 template <typename Dim0, typename Dim1, typename LayoutProvider,
@@ -71,9 +71,9 @@ constexpr auto make_format(Dim0 dim0, Dim1 dim1, AbstractLayoutProvider<LayoutPr
 template <typename T>
 struct format_traits;
 
-template <typename View, typename Layout, typename LayoutProvider>
-struct format_traits<TensorFormat<View, Layout, LayoutProvider>> {
-    using view_type = View;
+template <typename Shape, typename Layout, typename LayoutProvider>
+struct format_traits<TensorFormat<Shape, Layout, LayoutProvider>> {
+    using shape_type = Shape;
     using layout_type = Layout;
     using layout_provider_type = LayoutProvider;
 };

@@ -9,10 +9,10 @@ struct RowMajorTiling : AbstractTilingProvider<RowMajorTiling> {
     template <typename Tensor, typename Tiling>
     static constexpr auto gen_tiling_indices(Tensor const &tensor, Tiling const &tiling) {
         static_assert(is_tensor_type<Tensor> && is_a<ttiling_tag, Tiling>);
-        auto tensor_view = tensor.view();
+        auto tensor_shape = tensor.shape();
         auto dim_orders = tiling.orders();
-        static_assert(is_dims_type<decltype(tensor_view)> && is_dims_type<decltype(dim_orders)>);
-        static_assert(decltype(tensor_view)::nDims == 2 && decltype(dim_orders)::nDims == 2);
+        static_assert(is_dims_type<decltype(tensor_shape)> && is_dims_type<decltype(dim_orders)>);
+        static_assert(decltype(tensor_shape)::nDims == 2 && decltype(dim_orders)::nDims == 2);
 
         namespace views = ranges::views;
         // Given a row major tiling:

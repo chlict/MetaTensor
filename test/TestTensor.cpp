@@ -22,14 +22,14 @@ TEST(TestTensor, Test2) {
     static_assert(std::is_same_v<tensor_traits<T>::space, MemSpace::GM>);
 
     auto format2 = tensor2.format();
-    auto view = format2.view();
+    auto shape = format2.shape();
     auto layout = format2.layout();
-    static_assert(view.dim[0_c] == 2_c);
+    static_assert(shape.dim[0_c] == 2_c);
     static_assert(layout.dimensions_.dim[0_c] == 4_c);
 
-    auto view_0 = tensor2.view().dim[0_c];
-    auto view_1 = tensor2.view().dim[1_c];
-    static_assert(view_0 == 2_c && view_1 == 4_c);
+    auto shape_0 = tensor2.shape().dim[0_c];
+    auto shape_1 = tensor2.shape().dim[1_c];
+    static_assert(shape_0 == 2_c && shape_1 == 4_c);
 
     auto dimensions_0 = tensor2.dimensions().dim[0_c];
     static_assert(dimensions_0 == 4_c);
@@ -45,8 +45,8 @@ TEST(TestTensor, Test3) {
     auto tensor2 = static_cast<T1&>(th);
     print_type_name(tensor1);
     print_type_name(tensor2);
-    auto view_0 = tensor2.view().dim[0_c];
-    static_assert(view_0 == 2_c);
+    auto shape_0 = tensor2.shape().dim[0_c];
+    static_assert(shape_0 == 2_c);
 
     std::cout << th << std::endl;
     std::cout << tensor2 << std::endl;

@@ -63,13 +63,13 @@ struct TAdd {
         auto addr_src1 = src1_.addr();
         auto addr_src2 = src2_.addr();
 
-        auto view1_sum = src1_.format().view().dim[0_c];
-        auto view2_sum = src1_.format().view().dim[0_c];
-        auto view_sum = (int)(view1_sum + view2_sum);
+        auto shape1_sum = src1_.format().shape().dim[0_c];
+        auto shape2_sum = src1_.format().shape().dim[0_c];
+        auto shape_sum = (int)(shape1_sum + shape2_sum);
 
-        auto fn = [addr_dest, addr_src1, addr_src2, view_sum]() {
-            printf("tadd(tensor 0x%x, tensor 0x%x, tensor 0x%x) view_sum = %d\n",
-                    (unsigned)addr_dest, (unsigned)addr_src1, (unsigned)addr_src2, view_sum);
+        auto fn = [addr_dest, addr_src1, addr_src2, shape_sum]() {
+            printf("tadd(tensor 0x%x, tensor 0x%x, tensor 0x%x) shape_sum = %d\n",
+                    (unsigned)addr_dest, (unsigned)addr_src1, (unsigned)addr_src2, shape_sum);
         };
 
         return fn;
