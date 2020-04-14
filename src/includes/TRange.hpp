@@ -1,3 +1,5 @@
+#pragma once
+
 #include <iostream>
 
 struct trange_tag;
