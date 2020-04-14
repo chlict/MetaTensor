@@ -52,7 +52,7 @@ struct Tensor : TensorHandle {
 
     constexpr auto layout() const { return format_.layout(); }
 
-    constexpr auto shape() const { return format_.shape(); }
+    constexpr auto dimensions() const { return format_.dimensions(); }
 
     constexpr auto strides() const { return format_.strides(); }
 

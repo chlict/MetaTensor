@@ -39,8 +39,8 @@ struct TensorFormat {
         return layout_;
     }
 
-    constexpr auto shape() const {
-        return layout_.shape();
+    constexpr auto dimensions() const {
+        return layout_.dimensions();
     }
 
     constexpr auto strides() const {

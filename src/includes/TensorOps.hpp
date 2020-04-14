@@ -24,11 +24,11 @@ struct TMov {
 
     constexpr auto gen_code() const {
         // Calc params
-        auto shape1 = output().shape();
-        auto shape2 = input().shape();
+        auto dimensions1 = output().dimensions();
+        auto dimensions2 = input().dimensions();
 
-        auto fn = [shape1, shape2]() {
-            printf("tmov(tensor %lu, tensor %lu)\n", shape1.nDims, shape2.nDims);
+        auto fn = [dimensions1, dimensions2]() {
+            printf("tmov(tensor %lu, tensor %lu)\n", dimensions1.nDims, dimensions2.nDims);
         };
         return fn;
     }
@@ -84,15 +84,15 @@ struct TAdd {
 template <typename Tensor1, typename Tensor2>
 constexpr auto tmov1(Tensor1 &&tensor1, Tensor2 &&tensor2) {
     static_assert(is_tensor_type<std::remove_reference_t<Tensor1>>);
-    auto shape1 = tensor1.shape();
-    auto shape2 = tensor2.shape();
-    printf("tmov1(tensor %lu, tensor %lu)\n", shape1.nDims, shape2.nDims);
+    auto dimensions1 = tensor1.dimensions();
+    auto dimensions2 = tensor2.dimensions();
+    printf("tmov1(tensor %lu, tensor %lu)\n", dimensions1.nDims, dimensions2.nDims);
 }
 
 template <typename Tensor1, typename Tensor2>
 constexpr auto tadd1(Tensor1 &&tensor1, Tensor2 &&tensor2) {
     static_assert(is_tensor_type<std::remove_reference_t<Tensor1>>);
-    auto shape1 = tensor1.shape();
-    auto shape2 = tensor2.shape();
-    printf("tadd1(tensor %lu, tensor %lu)\n", shape1.nDims, shape2.nDims);
+    auto dimensions1 = tensor1.dimensions();
+    auto dimensions2 = tensor2.dimensions();
+    printf("tadd1(tensor %lu, tensor %lu)\n", dimensions1.nDims, dimensions2.nDims);
 }
