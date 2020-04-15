@@ -44,35 +44,6 @@ struct TOperator {
         }
     }
 
-    constexpr auto gen_code_2_I_1_O() const {
-        auto inputs = inputs_;
-        static_assert(hana::length(inputs) == hana::size_c<2>);
-        auto expr = expr_;
-//        static_assert(yap::get_arity(expr) == 2);
-        auto input1 = inputs[0_c];
-        auto input2 = inputs[1_c];
-        static_assert(is_a<toperand_tag>(input1) && is_a<toperand_tag>(input2));
-        auto output = output_;
-
-        auto codes = [input1, input2, output, expr]() {
-            // make sure all these occurred at compile time in case executed on device
-            auto compiler = ECompiler(expr);
-            auto indices1 = input1.gen_tiling_indices();
-            auto indices2 = input2.gen_tiling_indices();
-            auto indices3 = output.gen_tiling_indices();
-            for (auto i1 = indices1.begin(), i2 = indices2.begin(), i3 = indices3.begin();
-                 i1 != indices1.end() && i2 != indices2.end() && i3 != indices3.end();
-                 i1++, i2++, i3++) {
-                auto tile1 = input1.get_tile(*i1);
-                auto tile2 = input2.get_tile(*i2);
-                auto tile3 = output.get_tile(*i3);
-                auto core = compiler.compile(tile3, tile1, tile2);
-                core();
-            }
-        };
-        return codes;
-    }
-
     constexpr auto gen_code_1_I_1_O() const {
         auto inputs = inputs_;
         static_assert(hana::length(inputs) == hana::size_c<1>);
@@ -106,4 +77,32 @@ struct TOperator {
         return codes;
     }
 
+    constexpr auto gen_code_2_I_1_O() const {
+        auto inputs = inputs_;
+        static_assert(hana::length(inputs) == hana::size_c<2>);
+        auto expr = expr_;
+//        static_assert(yap::get_arity(expr) == 2);
+        auto input1 = inputs[0_c];
+        auto input2 = inputs[1_c];
+        static_assert(is_a<toperand_tag>(input1) && is_a<toperand_tag>(input2));
+        auto output = output_;
+
+        auto codes = [input1, input2, output, expr]() {
+            // make sure all these occurred at compile time in case executed on device
+            auto compiler = ECompiler(expr);
+            auto indices1 = input1.gen_tiling_indices();
+            auto indices2 = input2.gen_tiling_indices();
+            auto indices3 = output.gen_tiling_indices();
+            for (auto i1 = indices1.begin(), i2 = indices2.begin(), i3 = indices3.begin();
+                 i1 != indices1.end() && i2 != indices2.end() && i3 != indices3.end();
+                 i1++, i2++, i3++) {
+                auto tile1 = input1.get_tile(*i1);
+                auto tile2 = input2.get_tile(*i2);
+                auto tile3 = output.get_tile(*i3);
+                auto core = compiler.compile(tile3, tile1, tile2);
+                core();
+            }
+        };
+        return codes;
+    }
 };
