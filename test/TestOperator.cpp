@@ -18,7 +18,7 @@ TEST(TestOperator, Test1) {
 }
 
 TEST(TestOperator, Test2) {
-    auto format1 = make_format(Dims(2, 4), RowMajorLayout());
+    auto format1 = make_format(Dims(2, 8), RowMajorLayout());
     auto tensor1 = Tensor(float(), format1, MemSpace::GM(), 0x10);
     auto tensor2 = Tensor(float(), format1, MemSpace::GM(), 0x20);
 
@@ -31,10 +31,9 @@ TEST(TestOperator, Test2) {
 
     using namespace boost::yap::literals;
     auto expr = 1_p + 1_p;
-    auto calc = TOperator(boost::hana::make_tuple(src1), dest, expr);
-    auto code = calc.gen_code_1_I_1_O();
+    auto calc = TOperator(expr, dest, src1);
+    auto code = calc.gen_code();
     code();
-//    tensor1.tileWith(tiling), tensor2.tileWith(tiling2) | 1_p + 2_p
 }
 
 TEST(TestOperator, Test3) {
@@ -50,11 +49,11 @@ TEST(TestOperator, Test3) {
     auto src2 = TOperand(tensor2, tiling);
     auto dest = TOperand(tensor2, tiling);
 
-    using namespace boost::yap::literals;
-    auto expr = 1_p + 2_p;
+    auto mul_add = [](auto &&... args) {
+        using namespace boost::yap::literals;
+        auto op = TOperator(1_p = 2_p + 3_p, args...);
+        op.gen_code()();
+    };
 
-    auto inputs = make_inputs(src1, src2);
-    auto const calc = TOperator(inputs, dest, expr);
-    auto codes = calc.gen_code_2_I_1_O();
-    codes();
+    mul_add(dest, src1, src2);
 }
