@@ -42,4 +42,13 @@ struct VectorTilingService : AbstractTilingService<VectorTilingService<TRange> >
         static_assert(std::is_integral_v<Index>);
         return Dim1(i);
     }
+
+    constexpr auto gen_tile_shape() const {
+        return Dim1(trange_.size());
+    }
+
+    friend std::ostream& operator << (std::ostream &os, VectorTilingService const service) {
+        os << "Vector tiling: " << service.trange_;
+        return os;
+    }
 };

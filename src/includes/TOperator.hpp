@@ -4,70 +4,32 @@
 #include "Tensor.hpp"
 #include "TTiling.hpp"
 #include "TilingService.hpp"
+#include "TOperand.hpp"
 #include "ECompiler.hpp"
 
-struct toperand_tag;
+
+struct toperator_tag;
 
 template <typename T>
-constexpr bool is_toperand_type = is_a<toperand_tag, T>;
-
-// Operator input: input tensor with tiling description
-template <typename Tensor, typename Tiling>
-struct TOperand {
-    static_assert(is_tensor_type<Tensor> && is_a<ttiling_tag, Tiling>);
-
-    using tag = toperand_tag;
-
-    const Tensor tensor_;
-    const Tiling tiling_;
-    // const Padding padding_;
-
-    constexpr TOperand(Tensor const &tensor, Tiling const &tiling) : tensor_(tensor), tiling_(tiling) {}
-
-    constexpr TOperand(Tensor const &other) : tensor_(other.tensor_), tiling_(other.tiling_) {}
-
-    constexpr TOperand(Tensor &&other) : tensor_(other.tensor_), tiling_(other.tiling_) {}
-
-    constexpr auto tensor() const { return tensor_; }
-
-    constexpr auto tiling() const { return tiling_; }
-
-    constexpr auto gen_tiling_indicies() const {
-
-    }
-
-    constexpr auto get_tile() const {
-
-    }
-
-    friend std::ostream& operator << (std::ostream &os, TOperand const &opnd) {
-        os << "TOpnd [" << opnd.tensor() << "\n" << opnd.tiling() << "]";
-        return os;
-    }
-};
-
-struct tcalculator_tag;
-
-template <typename T>
-constexpr bool is_tcalculator_type = is_a<tcalculator_tag, T>;
+constexpr bool is_toperator_type = is_a<toperator_tag, T>;
 
 template<typename Inputs, typename Output, typename Expr>
-struct TCalculator {
+struct TOperator {
     static_assert(is_hana_tuple_type<Inputs> && is_toperand_type<Output> && is_yap_expr_type<Expr>);
 
-    using tag = tcalculator_tag;
+    using tag = toperator_tag;
 
     const Inputs inputs_;
     const Output output_;
     const Expr   expr_;
 
-    constexpr TCalculator(Inputs const &inputs, Output const &output, Expr const &expr) :
+    constexpr TOperator(Inputs const &inputs, Output const &output, Expr const &expr) :
         inputs_(inputs), output_(output), expr_(expr) {}
 
-    constexpr TCalculator(TCalculator const &other) :
+    constexpr TOperator(TOperator const &other) :
             inputs_(other.inputs_), output_(other.output_), expr_(other.expr_) {}
 
-    constexpr TCalculator(TCalculator &&other) :
+    constexpr TOperator(TOperator &&other) :
             inputs_(other.inputs_), output_(other.output_), expr_(other.expr_) {}
 
     constexpr auto gen_copy_in() const {}

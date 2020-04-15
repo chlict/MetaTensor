@@ -16,10 +16,10 @@ struct RowMajorTilingService : AbstractTilingService<
         trange_row_(trange_row), trange_col_(trange_col) {}
 
     constexpr RowMajorTilingService(RowMajorTilingService const &other) :
-            trange_row_(other.trange_row), trange_col_(other.trange_col) {}
+            trange_row_(other.trange_row_), trange_col_(other.trange_col_) {}
 
     constexpr RowMajorTilingService(RowMajorTilingService &&other) noexcept :
-            trange_row_(other.trange_row), trange_col_(other.trange_col) {}
+            trange_row_(other.trange_row_), trange_col_(other.trange_col_) {}
 
     template <typename Tensor>
     constexpr auto gen_tiling_indices_for(Tensor const &tensor) const {
@@ -59,5 +59,14 @@ struct RowMajorTilingService : AbstractTilingService<
     template <typename Index>
     constexpr auto index_to_pos(Index const &i) const {
         return Dim2(std::get<0>(i), std::get<1>(i));
+    }
+
+    constexpr auto gen_tile_shape() const {
+        return Dim2(trange_row_.size(), trange_col_.size());
+    }
+
+    friend std::ostream& operator << (std::ostream &os, RowMajorTilingService const service) {
+        os << "Row major tiling: row" << service.trange_row_ << ", col" << service.trange_col_;
+        return os;
     }
 };

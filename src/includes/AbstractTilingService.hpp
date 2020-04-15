@@ -3,7 +3,10 @@
 #include "Utils.hpp"
 #include "Tensor.hpp"
 
-struct tiling_service_tag {};
+struct tiling_service_tag;
+
+template <typename T>
+constexpr bool is_tiling_service_type = is_a<tiling_service_tag, T>;
 
 // Each tensor format should provide a tiling service which implements all
 // the interfaces declared in AbstractTilingService
@@ -22,6 +25,11 @@ struct AbstractTilingService {
     constexpr auto index_to_pos(Index const &i) const {
         auto service = static_cast<const TilingService *>(this);
         return service->index_to_pos(i);
+    }
+
+    constexpr auto gen_tile_shape() const {
+        auto service = static_cast<const TilingService *>(this);
+        return service->gen_tile_shape();
     }
 };
 
