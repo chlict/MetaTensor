@@ -55,10 +55,9 @@ TEST(TestExprCompiler, Test4) {
     auto tensor3 = Tensor(float(), format1, MemSpace::GM(), 0x30);
     auto tensor4 = Tensor(float(), format1, MemSpace::GM(), 0x40);
 
-    using namespace boost::yap::literals;
-
-    auto expr = 1_p + 2_p * 3_p;
-    auto add_mul = [expr](auto &&... args) {
+    auto add_mul = [](auto &&... args) {
+        using namespace boost::yap::literals;
+        auto expr = 1_p + 2_p * 3_p;
         auto kernel = ECompiler(expr).compile(args...);
         launch(kernel);
     };
