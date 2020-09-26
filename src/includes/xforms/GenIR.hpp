@@ -8,9 +8,6 @@
 #include "Placeholder.hpp"
 #include "xforms/XformUtils.hpp"
 
-namespace yap = boost::yap;
-namespace hana = boost::hana;
-
 template <typename Sequence, typename Stack, long long I = 1>
 struct GenIRXform {
     Sequence mIRList;

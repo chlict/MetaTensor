@@ -2,8 +2,12 @@
 
 #include <boost/yap/expression.hpp>
 #include <iostream>
+#include "Utils.hpp"
 
 struct temp_placeholder_tag;
+
+template <typename T>
+constexpr bool is_temp = is_a<temp_placeholder_tag, T>;
 
 // A placeholder for temporary variables
 template <long long I>
@@ -20,6 +24,5 @@ struct temp_placeholder : boost::hana::llong<I> {
 
 auto const _0 = boost::yap::make_terminal(temp_placeholder<0>{});
 auto const _1 = boost::yap::make_terminal(temp_placeholder<1>{});
+auto const _2 = boost::yap::make_terminal(temp_placeholder<1>{});
 
-template <typename T>
-constexpr bool is_temp = is_a<temp_placeholder_tag, T>;

@@ -52,7 +52,7 @@ TEST(TestOperator, Test3) {
     auto mul_add = [](auto &&... args) {
         using namespace boost::yap::literals;
         auto op = TOperator(1_p = 2_p + 3_p, args...);
-        op.gen_code()();
+        op.gen_code()();    // with execution
     };
 
     mul_add(dest, src1, src2);

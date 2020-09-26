@@ -4,6 +4,9 @@
 #include "Utils.hpp"
 #include "xforms/PrintIR.hpp"
 
+namespace yap = boost::yap;
+namespace hana = boost::hana;
+
 struct xform_pass_tag;
 
 // Transform at compile time
