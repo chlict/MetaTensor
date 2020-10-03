@@ -25,6 +25,29 @@ struct ExprBlock {
 
     constexpr ExprBlock(ExprBlock&& other) noexcept : expr_block_(other.expr_block_) {}
 
+    template <typename ...Args>
+    constexpr auto gen_code(Args &&... args) const {
+        // The variadic arguments make it nowhere to place a DumpFlag arg with default value.
+        if constexpr (need_dump(DumpFlag::ON{})) {
+           printf("--------Initial expressions--------\n");
+           print_ir_list_simple(expr_block_);
+        }
+
+        // First replace all the placeholders in expr with args
+        auto ir_list = accept_args(static_cast<Args &&>(args)...);
+        return do_transforms(ir_list);
+    }
+
+    friend std::ostream& operator<< (std::ostream &os, ExprBlock const& L) {
+        namespace hana = boost::hana;
+        hana::for_each(L.expr_block_, [&os](auto const &expr) {
+            boost::yap::print(os, expr);
+        });
+        return os;
+    }
+
+private:
+    // Replace placeholders like 1_p, 2_p ... with actual args
     template <typename ... Args>
     constexpr auto accept_args(Args &&... args) const {
         auto ir_list = hana::transform(expr_block_, [&args...](auto const& expr) {
@@ -39,17 +62,8 @@ struct ExprBlock {
        return ir_list;
     }
 
-    template <typename ...Args>
-    constexpr auto gen_code(Args &&... args) const {
-        // The variadic arguments make it nowhere to place a DumpFlag arg with default value.
-        if constexpr (need_dump(DumpFlag::ON{})) {
-           printf("--------Initial expressions--------\n");
-           print_ir_list_simple(expr_block_);
-        }
-
-        // First replace all the placeholders in expr with args
-        auto ir_list = accept_args(static_cast<Args &&>(args)...);
-
+    template <typename IRList>
+    constexpr auto do_transforms(IRList &&ir_list) const {
         // Go through a set of transformations
         auto xforms = hana::make_tuple(
             AllocTensor(),
@@ -58,20 +72,12 @@ struct ExprBlock {
 
         // Call each xform's transform() method. Each xform's output serves as input of next xform.
         auto codes = hana::fold_left(xforms, ir_list /* init state */,
-            /* accept an irlist and transform to a new irlist */
+            // accept an irlist and transform to a new irlist
             [](auto &&irlist, auto &&xform) {
                 return xform.transform(irlist, DumpFlag::ON{});
             }
         );
 
         return codes;
-    }
-
-    friend std::ostream& operator<< (std::ostream &os, ExprBlock const& L) {
-        namespace hana = boost::hana;
-        hana::for_each(L.expr_block_, [&os](auto const &expr) {
-            boost::yap::print(os, expr);
-        });
-        return os;
     }
 };
