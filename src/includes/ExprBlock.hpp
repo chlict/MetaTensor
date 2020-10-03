@@ -38,6 +38,13 @@ struct ExprBlock {
         return do_transforms(ir_list);
     }
 
+    // Gen code and execute
+    template <typename ... Args>
+    constexpr auto operator()(Args &&... args) const {
+        auto codelet = gen_code(std::forward<Args>(args)...);
+        codelet();  // execute
+    }
+
     friend std::ostream& operator<< (std::ostream &os, ExprBlock const& L) {
         namespace hana = boost::hana;
         hana::for_each(L.expr_block_, [&os](auto const &expr) {
