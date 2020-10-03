@@ -139,13 +139,13 @@ struct AllocTensor : StaticTransform {
                     void>
     >
     constexpr auto transform(IRList &&ir_list, Dumping dumping = DumpFlag::OFF{}) const {
-        // single ir scanner
-        auto fn = [](auto &&map, auto &&ir) -> decltype(auto) {
-            return yap::transform(ir, TempScanner(map));
-        };
-
         // step1 - scan the ir list and create tensors for temps
-        auto map = hana::fold_left(ir_list, /* init state */ hana::make_map(), fn);
+        auto map = hana::fold_left(ir_list, hana::make_map() /* init state, an empty map */,
+            // For each ir in ir_list, scan for the temp tensor and make a record in the map
+            [](auto &&map, auto &&ir) {
+                return yap::transform(ir, TempScanner(map));
+            }
+        );
 
         // step2 - substitute the temps
         auto new_ir_list = hana::transform(ir_list, [&map](auto const &ir) {

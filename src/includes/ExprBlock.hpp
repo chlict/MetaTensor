@@ -25,26 +25,32 @@ struct ExprBlock {
 
     constexpr ExprBlock(ExprBlock&& other) noexcept : expr_block_(other.expr_block_) {}
 
-    template <typename ...Args>
-    constexpr auto gen_code(Args &&... args) const {
-        // The variadic arguments make it nowhere to place a DumpFlag arg with a default
-        // value.
-        if constexpr (need_dump(DumpFlag::ON{})) {
-           printf("----Initial expressions----\n");
-           print_ir_list_simple(expr_block_);
-        }
-
-        // First replace all the placeholders in expr with args
+    template <typename ... Args>
+    constexpr auto accept_args(Args &&... args) const {
         auto ir_list = hana::transform(expr_block_, [&args...](auto const& expr) {
             return boost::yap::replace_placeholders(expr, static_cast<Args &&>(args)...);
         });
 
        if constexpr (need_dump(DumpFlag::ON{})) {
-           printf("----After replace placeholders----\n");
+           printf("--------IR After replace placeholders--------\n");
            print_ir_list_simple(ir_list);
        }
 
-        // Go through a set of transforms
+       return ir_list;
+    }
+
+    template <typename ...Args>
+    constexpr auto gen_code(Args &&... args) const {
+        // The variadic arguments make it nowhere to place a DumpFlag arg with default value.
+        if constexpr (need_dump(DumpFlag::ON{})) {
+           printf("--------Initial expressions--------\n");
+           print_ir_list_simple(expr_block_);
+        }
+
+        // First replace all the placeholders in expr with args
+        auto ir_list = accept_args(static_cast<Args &&>(args)...);
+
+        // Go through a set of transformations
         auto xforms = hana::make_tuple(
             AllocTensor(),
             CodeGen()
@@ -59,7 +65,6 @@ struct ExprBlock {
         );
 
         return codes;
-        // return stub_codelet;
     }
 
     friend std::ostream& operator<< (std::ostream &os, ExprBlock const& L) {
