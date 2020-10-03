@@ -25,7 +25,8 @@ TEST(TestExprBlock, Test2) {
         tensor3 = temp_1 * tensor3
     };
 
-    add_mul.gen_code()();
+    auto kernel = add_mul.gen_code();
+    launch(kernel);
 }
 
 TEST(TestExprBlock, Test3) {
@@ -39,7 +40,8 @@ TEST(TestExprBlock, Test3) {
         _t2 = _t1 * 3_p
     };
 
-    add_mul.gen_code(tensor1, tensor2, tensor3)();
+    auto kernel = add_mul.gen_code(tensor1, tensor2, tensor3);
+    launch(kernel);
 }
 
 TEST(TestExprBlock, Test4) {

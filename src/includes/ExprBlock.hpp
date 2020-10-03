@@ -41,8 +41,8 @@ struct ExprBlock {
     // Gen code and execute
     template <typename ... Args>
     constexpr auto operator()(Args &&... args) const {
-        auto codelet = gen_code(std::forward<Args>(args)...);
-        codelet();  // execute
+        auto kernel = gen_code(std::forward<Args>(args)...);
+        launch(kernel);
     }
 
     friend std::ostream& operator<< (std::ostream &os, ExprBlock const& L) {
