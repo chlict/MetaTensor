@@ -12,6 +12,7 @@
 #include "XformUtils.hpp"
 
 struct CodeGenXform {
+    // Gen code for dest = src1 op src2
     template <yap::expr_kind BinaryOP, typename Dest, typename Src1, typename Src2>
     auto operator()(yap::expr_tag<yap::expr_kind::assign>,
             Dest const &dest_expr,
@@ -24,25 +25,24 @@ struct CodeGenXform {
         static_assert(is_tensor_type<std::remove_reference_t<decltype(src1)> >);
         static_assert(is_tensor_type<std::remove_reference_t<decltype(src2)> >);
 
-//        printf("CodeGenXform: tensor = expr1 op expr2 matched\n");
+        // printf("CodeGenXform: tensor = expr1 op expr2 matched\n");
 
         if constexpr (BinaryOP == yap::expr_kind::plus) {
-
             auto tadd = TAdd(dest, src1, src2);
-            auto code = tadd.gen_code();
-            return code;
-            //auto code = TAdd(dest, src1, src2).gen_code();
-            //return code;
-//            std::cout << "Executing TensorAdd`" << std::endl;
+            return tadd.gen_code();
         }
-//        else if constexpr (BinaryOP == yap::expr_kind::multiplies) {
-//            std::cout << "Executing TensorMul" << std::endl;
-//        }
+        else if constexpr (BinaryOP == yap::expr_kind::multiplies) {
+            return []() { printf("Code generation for multiplication is not implemented\n"); };
+        }
         else {
-            return []() {
-                printf("Not implemented\n");
-            };
+            return []() { printf("Code generation for this operation is not implemented\n"); };
         }
+    }
+
+    // Not work?
+    template <yap::expr_kind AnyOP, typename ... Children>
+    auto operator()(yap::expression<AnyOP, hana::tuple<Children...> > expr) {
+        return []() { printf("Code generation not implemented for this expression\n"); };
     }
 };
 

@@ -10,6 +10,7 @@ TEST(TestExprList, Test1) {
     };
     std::cout << list1 << std::endl;
 
+    // Actuall only assign expressions can be code generated for.
     list1.gen_code(1, 2, 3);
 }
 
