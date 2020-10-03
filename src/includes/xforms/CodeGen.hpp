@@ -50,10 +50,11 @@ struct CodeGen : StaticTransform {
     using tag = xform_pass_tag;
 
     // Given an IRList, returns the codes generated
-    template <typename IRList, typename Dumping>
-    constexpr auto transform(IRList &&irlist, Dumping dumping) const {
+    template <typename IRList, typename Dumping = DumpFlag::OFF>
+    constexpr auto transform(IRList &&irlist, Dumping dumping = DumpFlag::OFF{}) const {
         static_assert(is_hana_tuple_type<std::remove_reference_t<IRList> >);
 
+        // For each ir in irList, transform it using CodeGenXform().
         auto code_list = hana::transform(irlist, [](auto &&ir) {
             return yap::transform(ir, CodeGenXform());
         });
@@ -80,3 +81,6 @@ auto launch = [](auto &&codes) {
 auto execute = [](auto &&codes) {
     codes();
 };
+
+// For debug
+auto stub_codelet = []() { printf("Stub executed\n"); };

@@ -15,13 +15,26 @@ struct StaticTransform {};
 // Trsnsform at runtime
 struct DynamicTransform {};
 
-
-struct with_dump {};
-struct nodump {};
+struct DumpFlag {
+    struct ON  {};
+    struct OFF {};
+};
 
 template <typename Dumping>
 constexpr bool need_dump(Dumping dumping) {
-    return std::is_same_v<Dumping, with_dump>;
+#ifdef NDEBUG  // Release build
+    return false;
+#else
+    return std::is_same_v<Dumping, DumpFlag::ON>;
+#endif
+}
+
+// Not sure whether it introduces extra cost
+template <typename Flag, typename Fn>
+constexpr void on_dump(Flag flag, Fn const& fn) {
+    if constexpr (need_dump(flag)) {
+        fn();
+    }
 }
 
 template <typename T>

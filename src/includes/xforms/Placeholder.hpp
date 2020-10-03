@@ -24,5 +24,5 @@ struct temp_placeholder : boost::hana::llong<I> {
 
 auto const _0 = boost::yap::make_terminal(temp_placeholder<0>{});
 auto const _1 = boost::yap::make_terminal(temp_placeholder<1>{});
-auto const _2 = boost::yap::make_terminal(temp_placeholder<1>{});
+auto const _2 = boost::yap::make_terminal(temp_placeholder<2>{});
 

@@ -73,8 +73,8 @@ struct GenIR : StaticTransform {
     using tag = xform_pass_tag;
 
     // Given a yap expression as an AST, returns a list of flattened IR
-    template <typename AST, typename Dumping = nodump>
-    constexpr auto transform(AST &&ast, Dumping dumping = nodump{}) const {
+    template <typename AST, typename Dumping = DumpFlag::OFF>
+    constexpr auto transform(AST &&ast, Dumping dumping = DumpFlag::OFF{}) const {
         static_assert(is_yap_expr_type<std::remove_reference_t<AST>>);
         auto gen = yap::transform(std::forward<AST>(ast), GenIRXform{hana::make_tuple(), hana::make_tuple()});
 

@@ -28,14 +28,19 @@ struct ExprBlock {
     constexpr auto gen_code(Args &&... args) const {
         namespace yap = boost::yap;
 
+       if constexpr (need_dump(DumpFlag::ON{})) {
+           printf("----Initial expressions----\n");
+           print_ir_list_simple(expr_block_);
+       }
+
         // First replace all the placeholders in expr with args
         auto ir_list = hana::transform(expr_block_, [&args...](auto const& expr) {
             return yap::replace_placeholders(expr, static_cast<Args &&>(args)...);
         });
-//        auto constexpr dumping = Dumping();
-//        if constexpr (need_dump(dumping)) {
-//            yap::print(std::cout, ast);
-//        }
+       if constexpr (need_dump(DumpFlag::ON{})) {
+           printf("----After replace placeholders----\n");
+           print_ir_list_simple(ir_list);
+       }
 
         // Go through a set of transforms
         auto xforms = hana::make_tuple(
@@ -43,11 +48,15 @@ struct ExprBlock {
         );
 
         // Call each xform's transform() method. Each xform's output serves as input of next xform.
-        auto codes = hana::fold_left(xforms, ir_list, [](auto &&ir, auto &&xform) {
-            return xform.transform(ir, with_dump{});
-        });
+        auto codes = hana::fold_left(xforms, ir_list /* init state */,
+            /* accept an irlist and transform to a new irlist */
+            [](auto &&irlist, auto &&xform) {
+                return xform.transform(irlist, DumpFlag::ON{});
+            }
+        );
 
         return codes;
+        // return stub_codelet;
     }
 
     friend std::ostream& operator<< (std::ostream &os, ExprBlock const& L) {

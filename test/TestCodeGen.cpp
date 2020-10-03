@@ -55,7 +55,7 @@ TEST_F(TestCodeGen, DynamicShape1) {
     print_ir_list_simple(gen.mIRList);
 
     auto at = AllocTensor();
-    auto ir2 = at.transform(gen.mIRList, with_dump());
+    auto ir2 = at.transform(gen.mIRList, DumpFlag::ON{});
 
     auto codes = hana::transform(ir2, [](auto &&ir) {
         return yap::transform(ir, CodeGenXform());
@@ -81,7 +81,7 @@ TEST_F(TestCodeGen, StaticShape1) {
     print_ir_list_simple(gen.mIRList);
 
     auto at = AllocTensor();
-    auto ir2 = at.transform(gen.mIRList, with_dump());
+    auto ir2 = at.transform(gen.mIRList, DumpFlag::ON{});
 
     auto codes = hana::transform(ir2, [](auto &&ir) {
         return yap::transform(ir, CodeGenXform());

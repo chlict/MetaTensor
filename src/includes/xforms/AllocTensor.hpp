@@ -124,17 +124,21 @@ struct SubstituteXform {
     template<long long I>
     auto operator()(yap::expr_tag<boost::yap::expr_kind::terminal>, temp_placeholder<I> const &temp) {
         static_assert(hana::contains(decltype(hana::keys(map_))(),hana::llong_c<I>));
+        // auto tensor = map_[boost::hana::llong_c<I>];
+        // std::cout << "I == " << I << std::endl;
+        // print_type_name(tensor);
+        // boost::yap::print(std::cout, tensor);
         return map_[boost::hana::llong_c<I>];
     }
 };
 
 struct AllocTensor : StaticTransform {
-    template <typename IRList, typename Dumping = nodump,
+    template <typename IRList, typename Dumping = DumpFlag::OFF,
             typename = std::enable_if_t<
                     hana::is_a<hana::tuple_tag, IRList>,
                     void>
     >
-    constexpr auto transform(IRList &&ir_list, Dumping dumping = nodump{}) const {
+    constexpr auto transform(IRList &&ir_list, Dumping dumping = DumpFlag::OFF{}) const {
         // single ir scanner
         auto fn = [](auto &&map, auto &&ir) -> decltype(auto) {
             return yap::transform(ir, TempScanner(map));

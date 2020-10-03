@@ -14,7 +14,7 @@ TEST(TestExprCompiler, Test1) {
     auto term4 = yap::make_terminal(tensor4);
     auto expr1 = term1 + term2 * term3 + term4;
 
-    auto codes = ECompiler(expr1, with_dump()).compile();
+    auto codes = ECompiler(expr1, DumpFlag::ON{}).compile();
     launch(codes);
 }
 
