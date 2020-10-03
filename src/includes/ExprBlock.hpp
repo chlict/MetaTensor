@@ -8,6 +8,12 @@
 #include "xforms/AllocTensor.hpp"
 #include "xforms/CodeGen.hpp"
 
+// Expression block representing a sequence of expressions, like a compound statement:
+// ExprBlock {
+//     expr1,
+//     expr2,
+//     expr3
+// }
 template <typename ...Exprs>
 struct ExprBlock {
     // static_assert(all_are yap_expr_type)
@@ -19,24 +25,20 @@ struct ExprBlock {
 
     constexpr ExprBlock(ExprBlock&& other) noexcept : expr_block_(other.expr_block_) {}
 
-//    template <typename... BodyExprs>
-//    constexpr auto operator[] (BodyExprs &&... body_exprs) const {
-//        auto body_list = hana::tuple(body_exprs...);
-//    }
-
     template <typename ...Args>
     constexpr auto gen_code(Args &&... args) const {
-        namespace yap = boost::yap;
-
-       if constexpr (need_dump(DumpFlag::ON{})) {
+        // The variadic arguments make it nowhere to place a DumpFlag arg with a default
+        // value.
+        if constexpr (need_dump(DumpFlag::ON{})) {
            printf("----Initial expressions----\n");
            print_ir_list_simple(expr_block_);
-       }
+        }
 
         // First replace all the placeholders in expr with args
         auto ir_list = hana::transform(expr_block_, [&args...](auto const& expr) {
-            return yap::replace_placeholders(expr, static_cast<Args &&>(args)...);
+            return boost::yap::replace_placeholders(expr, static_cast<Args &&>(args)...);
         });
+
        if constexpr (need_dump(DumpFlag::ON{})) {
            printf("----After replace placeholders----\n");
            print_ir_list_simple(ir_list);
@@ -44,7 +46,8 @@ struct ExprBlock {
 
         // Go through a set of transforms
         auto xforms = hana::make_tuple(
-                CodeGen()
+            AllocTensor(),
+            CodeGen()
         );
 
         // Call each xform's transform() method. Each xform's output serves as input of next xform.
