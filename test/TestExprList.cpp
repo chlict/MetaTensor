@@ -28,19 +28,18 @@ TEST(TestExprBlock, Test2) {
     add_mul.gen_code()();
 }
 
-// TEST(TestExprBlock, Test3) {
-//     auto format1 = make_format(Dim2(2, 4), RowMajorLayout());
-//     auto tensor1 = Tensor(float(), format1, MemSpace::GM(), 0x10);
-//     auto tensor2 = Tensor(float(), format1, MemSpace::GM(), 0x20);
-//     auto tensor3 = Tensor(float(), format1, MemSpace::GM(), 0x30);
-//     auto temp_1 = Tensor(float(), format1, MemSpace::GM(), 0x40);
+TEST(TestExprBlock, Test3) {
+    auto format1 = make_format(Dim2(2, 4), RowMajorLayout());
+    auto tensor1 = Tensor(float(), format1, MemSpace::GM(), 0x10);
+    auto tensor2 = Tensor(float(), format1, MemSpace::GM(), 0x20);
+    auto tensor3 = Tensor(float(), format1, MemSpace::GM(), 0x30);
+    auto temp_1 = Tensor(float(), format1, MemSpace::GM(), 0x40);
 
-//     auto add_mul = ExprBlock {
-//             _1 = 1_p + 2_p,
-//             // sync(),
-//             _1 * 3_p
-//     };
+    auto add_mul = ExprBlock {
+        _1 = 1_p + 2_p,
+        // sync(),
+        _2 = _1 * 3_p
+    };
 
-//     add_mul.gen_code(tensor1, tensor2, tensor3);
-// //    add_mul.gen_code(tensor1, tensor2, tensor3)();
-// }
+    add_mul.gen_code(tensor1, tensor2, tensor3)();
+}
