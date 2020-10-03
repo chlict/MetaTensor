@@ -35,8 +35,8 @@ TEST(TestExprBlock, Test3) {
     auto tensor3 = Tensor(float(), format1, MemSpace::GM(), 0x30);
 
     auto add_mul = ExprBlock {
-        _1 = 1_p + 2_p,
-        _2 = _1 * 3_p
+        _t1 = 1_p + 2_p,
+        _t2 = _t1 * 3_p
     };
 
     add_mul.gen_code(tensor1, tensor2, tensor3)();
@@ -49,8 +49,8 @@ TEST(TestExprBlock, Test4) {
     auto tensor3 = Tensor(float(), format1, MemSpace::GM(), 0x30);
 
     auto add_mul = ExprBlock {
-        _1 = 1_p + 2_p,
-        _2 = _1 * 3_p
+        _t1 = 1_p + 2_p,
+        _t2 = _t1 * 3_p
     };
 
     add_mul(tensor1, tensor2, tensor3);
