@@ -3,9 +3,7 @@
 #include <boost/hana.hpp>
 #include "Utils.hpp"
 
-namespace hana = boost::hana;
-
-struct dims_tag {};
+struct dims_tag;
 
 template <typename T>
 constexpr bool is_dims_type = is_a<dims_tag, T>;
@@ -20,12 +18,12 @@ struct Dims {
 
     constexpr explicit Dims(T... t) : dim(t...) {}
 
-    constexpr Dims(Dims &&other) noexcept : dim(std::forward<Dims>(other).dim) {}
+    constexpr Dims(Dims &&other) noexcept : dim(std::move(other.dim)) {}
 
     constexpr Dims(const Dims &other) : dim(other.dim) {}
 
     template <typename ...U>
-    constexpr Dims(hana::tuple<U...> &&other) noexcept : dim(other) {}
+    constexpr Dims(hana::tuple<U...> &&other) noexcept : dim(std::move(other)) {}
 
     template <typename ...U>
     constexpr Dims(const hana::tuple<U...> &other) noexcept : dim(other) {}

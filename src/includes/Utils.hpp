@@ -7,6 +7,8 @@
 #include <boost/hana.hpp>
 #include <boost/yap/yap.hpp>
 
+namespace hana = boost::hana;
+
 // Usage:
 // 1) static_assert(is_a_t<tag, T>::value)
 // 2) static_assert(is_a<tag>(variable))

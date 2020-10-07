@@ -6,9 +6,9 @@
 #include "Utils.hpp"
 #include <type_traits>
 
-struct tensor_format_tag {};
+struct tensor_format_tag;
 
-// View represents a logical shape. E.g. a fractal tensor may have a Dim2(width, height)
+// Shape represents a logical shape. E.g. a fractal tensor may have a Dim2(width, height)
 // shape like a matrix, but the underlying layout has a Dim4 shape (dimensions).
 // LayoutProvider can be retrieved from format_traits
 template<typename Shape, typename Layout, typename LayoutProvider>
@@ -20,7 +20,7 @@ struct TensorFormat {
     Shape shape_;
     Layout layout_;
 
-    constexpr TensorFormat(Shape const &shape, Layout const &layout) :
+    constexpr TensorFormat(Shape const& shape, Layout const& layout) :
             shape_(shape), layout_(layout) {}
 
     constexpr TensorFormat(TensorFormat const &other) noexcept :
@@ -28,8 +28,8 @@ struct TensorFormat {
             layout_(other.layout_) {}
 
     constexpr TensorFormat(TensorFormat &&other) noexcept :
-            shape_(other.shape_),
-            layout_(other.layout_) {}
+            shape_(std::move(other.shape_)),
+            layout_(std::move(other.layout_)) {}
 
     constexpr auto shape() const {
         return shape_;
