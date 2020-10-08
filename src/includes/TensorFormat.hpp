@@ -23,6 +23,9 @@ struct TensorFormat {
     constexpr TensorFormat(Shape const& shape, Layout const& layout) :
             shape_(shape), layout_(layout) {}
 
+    constexpr TensorFormat(Shape&& shape, Layout&& layout) :
+            shape_(std::move(shape)), layout_(std::move(layout)) {}
+
     constexpr TensorFormat(TensorFormat const &other) noexcept :
             shape_(other.shape_),
             layout_(other.layout_) {}

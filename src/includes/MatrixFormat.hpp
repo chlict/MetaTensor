@@ -9,22 +9,22 @@ struct RowMajorLayout : AbstractLayoutProvider<RowMajorLayout> {
     // layout shape:   [inner: 4, outer: 2]
     // layout strides: [inner: 1, outer: 4]
     template <typename View>
-    constexpr auto operator()(View&& view) const {
-        static_assert(std::remove_reference_t<View>::nDims == 2, "Matrix expected");
+    constexpr auto operator()(View const& view) const {
+        static_assert(View::nDims == 2, "Matrix expected");
         auto shape = view_to_shape(view);
         auto strides = shape_to_strides(shape);
         return TensorLayout(shape, strides);
     }
 
     template <typename View>
-    static constexpr auto view_to_shape(View &&view) {
-        static_assert(std::remove_reference_t<View>::nDims == 2, "Matrix expected");
+    static constexpr auto view_to_shape(View const& view) {
+        static_assert(View::nDims == 2, "Matrix expected");
         return Dims(view.dim[1_c], view.dim[0_c]);
     }
 
     template <typename Shape>
-    static constexpr auto shape_to_strides(Shape &&shape) {
-        static_assert(std::remove_reference_t<Shape>::nDims == 2, "Matrix expected");
+    static constexpr auto shape_to_strides(Shape const& shape) {
+        static_assert(Shape::nDims == 2, "Matrix expected");
         return Dims(1_c, shape.dim[0_c]);
     }
 };
@@ -36,22 +36,22 @@ struct ColMajorLayout : AbstractLayoutProvider<ColMajorLayout> {
     // layout shape:   [inner: 2, outer: 4]
     // layout strides: [inner: 1, outer: 2]
     template <typename View>
-    constexpr auto operator()(View&& view) const {
-        static_assert(std::remove_reference_t<View>::nDims == 2, "Matrix expected");
+    constexpr auto operator()(View const& view) const {
+        static_assert(View::nDims == 2, "Matrix expected");
         auto shape = view_to_shape(view);
         auto strides = shape_to_strides(shape);
         return TensorLayout(shape, strides);
     }
 
     template <typename View>
-    static constexpr auto view_to_shape(View &&view) {
-        static_assert(std::remove_reference_t<View>::nDims == 2, "Matrix expected");
+    static constexpr auto view_to_shape(View const& view) {
+        static_assert(View::nDims == 2, "Matrix expected");
         return Dims(view.dim[0_c], view.dim[1_c]);
     }
 
     template <typename Shape>
-    static constexpr auto shape_to_strides(Shape &&shape) {
-        static_assert(std::remove_reference_t<Shape>::nDims == 2, "Matrix expected");
+    static constexpr auto shape_to_strides(Shape const& shape) {
+        static_assert(Shape::nDims == 2, "Matrix expected");
         return Dims(1_c, shape.dim[0_c]);
     }
 };

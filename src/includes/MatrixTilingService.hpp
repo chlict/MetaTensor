@@ -15,11 +15,14 @@ struct RowMajorTilingService : AbstractTilingService<
     constexpr RowMajorTilingService(TRangeRow const &trange_row, TRangeCol const &trange_col) :
         trange_row_(trange_row), trange_col_(trange_col) {}
 
+    constexpr RowMajorTilingService(TRangeRow  &&trange_row, TRangeCol &&trange_col) :
+        trange_row_(std::move(trange_row)), trange_col_(std::move(trange_col)) {}
+
     constexpr RowMajorTilingService(RowMajorTilingService const &other) :
             trange_row_(other.trange_row_), trange_col_(other.trange_col_) {}
 
     constexpr RowMajorTilingService(RowMajorTilingService &&other) noexcept :
-            trange_row_(other.trange_row_), trange_col_(other.trange_col_) {}
+            trange_row_(std::move(other.trange_row_)), trange_col_(std::move(other.trange_col_)) {}
 
     template <typename Tensor>
     constexpr auto gen_tiling_indices_for(Tensor const &tensor) const {
