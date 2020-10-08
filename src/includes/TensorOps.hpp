@@ -16,7 +16,7 @@ struct TMov {
 
     constexpr TMov(TMov const &other) : output_(other.output_), input_(other.input_) {}
 
-    constexpr TMov(TMov &&other) : output_(other.output_), input_(other.input_) {}
+    constexpr TMov(TMov &&other) : output_(std::move(other.output_)), input_(std::move(other.input_)) {}
 
     constexpr auto output() const { return output_; }
 
@@ -49,11 +49,14 @@ struct TAdd {
     const Src1 &src1_;
     const Src2 &src2_;
 
-    constexpr TAdd(Dest const &dest, Src1 const &src1, Src2 const &src2) : dest_(dest), src1_(src1), src2_(src2) {}
+    constexpr TAdd(Dest const &dest, Src1 const &src1, Src2 const &src2) : 
+        dest_(dest), src1_(src1), src2_(src2) {}
 
-    constexpr TAdd(TAdd const &other) : dest_(other.dest_), src1_(other.src1_), src2_(other.src2_) {}
+    constexpr TAdd(TAdd const &other) : 
+        dest_(other.dest_), src1_(other.src1_), src2_(other.src2_) {}
 
-    constexpr TAdd(TAdd &&other) : dest_(other.dest_), src1_(other.src1_), src2_(other.src2_) {}
+    constexpr TAdd(TAdd &&other) :
+        dest_(std::move(other.dest_)), src1_(std::move(other.src1_)), src2_(std::move(other.src2_)) {}
 
     constexpr auto output() const { return dest_; }
 

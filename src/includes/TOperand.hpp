@@ -22,6 +22,9 @@ struct TOperand {
     constexpr TOperand(Tensor const &tensor, TilingService const &tiling_service) :
             tensor_(tensor), tiling_service_(tiling_service) {}
 
+    constexpr TOperand(Tensor &&tensor, TilingService &&tiling_service) :
+            tensor_(std::move(tensor)), tiling_service_(std::move(tiling_service)) {}
+
     constexpr TOperand(Tensor const &other) : tensor_(other.tensor_), tiling_service_(other.tiling_service_) {}
 
     constexpr TOperand(Tensor &&other) noexcept : tensor_(other.tensor_), tiling_service_(other.tiling_service_) {}

@@ -42,7 +42,7 @@ struct Tensor : TensorHandle {
 
     constexpr Tensor(Tensor const &other) noexcept : format_(other.format_), addr_(other.addr_) {}
 
-    constexpr Tensor(Tensor &&other) noexcept : format_(other.format_), addr_(other.addr_) {}
+    constexpr Tensor(Tensor &&other) noexcept : format_(std::move(other.format_)), addr_(std::move(other.addr_)) {}
 
     constexpr auto format() const { return format_; }
 
