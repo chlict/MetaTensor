@@ -12,9 +12,11 @@ struct VectorTilingService : AbstractTilingService<VectorTilingService<TRange> >
 
     constexpr explicit VectorTilingService(TRange const &trange) : trange_(trange) {}
 
+    constexpr explicit VectorTilingService(TRange &&trange) : trange_(std::move(trange)) {}
+
     constexpr VectorTilingService(VectorTilingService const &other) : trange_(other.trange_) {}
 
-    constexpr VectorTilingService(VectorTilingService &&other) noexcept : trange_(other.trange_) {}
+    constexpr VectorTilingService(VectorTilingService &&other) noexcept : trange_(std::move(other.trange_)) {}
 
     template <typename Tensor>
     constexpr auto gen_tiling_indices_for(Tensor const &tensor) {

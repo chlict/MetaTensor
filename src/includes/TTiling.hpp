@@ -25,9 +25,11 @@ struct TTiling {
 
     constexpr TTiling(Orders const &orders, Ranges const &... ranges) : orders_(orders), ranges_(ranges...) {}
 
+    constexpr TTiling(Orders &&orders, Ranges &&... ranges) : orders_(std::move(orders)), ranges_(std::move(ranges)...) {}
+
     constexpr TTiling(TTiling const &other) : orders_(other.orders_), ranges_(other.ranges_) {}
 
-    constexpr TTiling(TTiling &&other) : orders_(other.orders_), ranges_(other.ranges_) {}
+    constexpr TTiling(TTiling &&other) : orders_(std::move(other.orders_)), ranges_(std::move(other.ranges_)) {}
 
     constexpr auto orders() const { return orders_; }
 

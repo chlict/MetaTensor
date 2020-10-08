@@ -30,7 +30,7 @@ struct TOperator {
             inputs_(other.inputs_), output_(other.output_), expr_(other.expr_) {}
 
     constexpr TOperator(TOperator &&other) noexcept :
-            inputs_(other.inputs_), output_(other.output_), expr_(other.expr_) {}
+            inputs_(std::move(other.inputs_)), output_(std::move(other.output_)), expr_(std::move(other.expr_)) {}
 
     constexpr auto gen_copy_in() const {}
 

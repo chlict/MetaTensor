@@ -24,12 +24,15 @@ struct TRange {
 
     constexpr TRange(Begin const &begin, End const &end, Step const &step, Size const &size = Size()) :
             begin_(begin), end_(end), step_(step), size_(size) {}
+ 
+    constexpr TRange(Begin &&begin, End &&end, Step &&step, Size &&size = Size()) :
+            begin_(std::move(begin)), end_(std::move(end)), step_(std::move(step)), size_(std::move(size)) {}
 
     constexpr TRange(TRange const &other) :
             begin_(other.begin_), end_(other.end_), step_(other.step_), size_(other.size_) {}
 
     constexpr TRange(TRange &&other) :
-            begin_(other.begin_), end_(other.end_), step_(other.step_), size_(other.size_) {}
+            begin_(std::move(other.begin_)), end_(std::move(other.end_)), step_(std::move(other.step_)), size_(std::move(other.size_)) {}
 
     constexpr auto begin() const { return begin_; }
 
