@@ -1,16 +1,14 @@
-#include "gtest/gtest.h"
 #include "TensorOps.hpp"
+#include "gtest/gtest.h"
 
 void Tester1() {
-    auto format1 = make_format(Dims(2_c, 4_c), RowMajorLayout());
-    auto tensor1 = Tensor(float(), format1, MemSpace::GM(), 0x1000);
-    auto tensor2 = Tensor(float(), format1, MemSpace::GM(), 0x2000);
-    tadd1(tensor1, tensor2);
+  auto format1 = make_format(Dims(2_c, 4_c), RowMajorLayout());
+  auto tensor1 = Tensor(float(), format1, MemSpace::GM(), 0x1000);
+  auto tensor2 = Tensor(float(), format1, MemSpace::GM(), 0x2000);
+  tadd1(tensor1, tensor2);
 }
 
-TEST(TestTensorOps, Test1) {
-    Tester1();
-}
+TEST(TestTensorOps, Test1) { Tester1(); }
 
 /**
  * The expected assembly code:
@@ -34,16 +32,14 @@ movq  %rsp, %rbp
 .cfi_endproc
  */
 void Tester2() {
-    auto format1 = make_format(Dims(2_c, 4_c), RowMajorLayout());
-    auto tensor1 = Tensor(float(), format1, MemSpace::GM(), 0x1000);
-    auto tensor2 = Tensor(float(), format1, MemSpace::GM(), 0x2000);
-    auto tmov = TMov(tensor1, tensor2);
-    tmov();
+  auto format1 = make_format(Dims(2_c, 4_c), RowMajorLayout());
+  auto tensor1 = Tensor(float(), format1, MemSpace::GM(), 0x1000);
+  auto tensor2 = Tensor(float(), format1, MemSpace::GM(), 0x2000);
+  auto tmov = TMov(tensor1, tensor2);
+  tmov();
 }
 
-TEST(TestTensorOps, Test2) {
-    Tester2();
-}
+TEST(TestTensorOps, Test2) { Tester2(); }
 
 /**
  * Expected assembly code:
@@ -73,33 +69,29 @@ __Z7Tester3v:                           ## @_Z7Tester3v
 
  */
 void Tester3() {
-    auto format1 = make_format(Dims(2_c, 4_c), RowMajorLayout());
-    auto tensor1 = Tensor(float(), format1, MemSpace::GM(), 0x1000);
-    auto tensor2 = Tensor(float(), format1, MemSpace::GM(), 0x2000);
-    auto tensor3 = Tensor(tensor1);
-    auto tmov = TMov(tensor2, tensor1).gen_code();
-    auto tadd = TAdd(tensor3, tensor1, tensor2).gen_code();
-    tmov();
-    tadd();
+  auto format1 = make_format(Dims(2_c, 4_c), RowMajorLayout());
+  auto tensor1 = Tensor(float(), format1, MemSpace::GM(), 0x1000);
+  auto tensor2 = Tensor(float(), format1, MemSpace::GM(), 0x2000);
+  auto tensor3 = Tensor(tensor1);
+  auto tmov = TMov(tensor2, tensor1).gen_code();
+  auto tadd = TAdd(tensor3, tensor1, tensor2).gen_code();
+  tmov();
+  tadd();
 }
 
-TEST(TestTensorOps, Test3) {
-    Tester3();
-}
+TEST(TestTensorOps, Test3) { Tester3(); }
 
 void Tester4() {
-    auto format1 = make_format(Dims(2_c, 4_c), RowMajorLayout());
-    auto tensor1 = Tensor(float(), format1, MemSpace::GM(), 0x1000);
-    auto tensor2 = Tensor(float(), format1, MemSpace::GM(), 0x2000);
-    auto tensor3 = Tensor(tensor1);
-    auto tmov = TMov(tensor2, tensor1).gen_code();
-    auto tadd = TAdd(tensor3, tensor1, tensor2).gen_code();
-    auto kernel = boost::hana::make_tuple(tmov);
-    boost::hana::for_each(kernel, [](auto &op) { op(); });
-    auto kernel2 = boost::hana::append(kernel, tadd);
-    boost::hana::for_each(kernel2, [](auto &op) { op(); });
+  auto format1 = make_format(Dims(2_c, 4_c), RowMajorLayout());
+  auto tensor1 = Tensor(float(), format1, MemSpace::GM(), 0x1000);
+  auto tensor2 = Tensor(float(), format1, MemSpace::GM(), 0x2000);
+  auto tensor3 = Tensor(tensor1);
+  auto tmov = TMov(tensor2, tensor1).gen_code();
+  auto tadd = TAdd(tensor3, tensor1, tensor2).gen_code();
+  auto kernel = boost::hana::make_tuple(tmov);
+  boost::hana::for_each(kernel, [](auto &op) { op(); });
+  auto kernel2 = boost::hana::append(kernel, tadd);
+  boost::hana::for_each(kernel2, [](auto &op) { op(); });
 }
 
-TEST(TestTensorOps, Test4) {
-    Tester4();
-}
+TEST(TestTensorOps, Test4) { Tester4(); }

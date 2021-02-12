@@ -1,14 +1,12 @@
 #pragma once
 
-template<typename T>
+template <typename T>
 struct A {
-    T data;
+  T data;
 
-    constexpr A(const T &data) : data(data) {}
+  constexpr A(const T &data) : data(data) {}
 
-    constexpr A(T &&data) : data(data) {}
+  constexpr A(T &&data) : data(data) {}
 
-    constexpr T getData() {
-        return data;
-    }
+  constexpr T getData() { return data; }
 };
