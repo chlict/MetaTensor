@@ -53,7 +53,7 @@ struct TTiling {
     static_assert(is_tensor_type<std::remove_reference_t<Tensor>>);
     static_assert(Orders::nDims == 1);  // only support 1D tensor
     auto range0 = ranges_[0_c];
-    // be careful not use size_t or unsigned for i or it will compile with error
+    // NOTE: do NOT use size_t or unsigned for i or it will compile with error
     // "not in the same ring" with hana data
     for (long i = range0.begin(); i < range0.end(); i += range0.step()) {
       auto tile = tensor.get_tile(Dims(i), Dims(range0.size()));

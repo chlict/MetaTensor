@@ -63,39 +63,91 @@ struct Tensor : TensorHandle {
 
   constexpr auto strides() const { return format_.strides(); }
 
+  // Get the address of an element at specified postion (coorination).
+  // The return value might be an integral constant or an uint64_t, so remember
+  // to cast it to ElemType * before use.
+  template <typename Pos>
+  constexpr auto elem_addr(Pos const &pos) const {
+    using Layout = typename format_traits<Format>::layout_provider_type;
+    auto offset = Layout::offset(pos, layout());
+    constexpr bool is_constant =
+        hana::is_a<hana::integral_constant_tag<long long>>(offset) &&
+        hana::is_a<hana::integral_constant_tag<long long>, Addr>;
+
+    if constexpr (is_constant) {
+      return addr() + offset * hana::llong_c<sizeof(ElemType)>;
+    } else {
+      return (uint64_t)addr() + sizeof(ElemType) * (uint64_t)offset;
+    }
+  }
+
+  // Get an element at specified postion
+  template <typename Pos>
+  constexpr ElemType elem(Pos const &pos) const {
+    return *(ElemType *)elem_addr(pos);
+  }
+
+  // Set an element at specified postion
+  template <typename Pos>
+  constexpr void set(Pos const &pos, ElemType const &elem) const {
+    ElemType *addr = static_cast<ElemType *>(elem_addr(pos));
+    *addr = elem;
+  }
+
   template <typename Pos, typename TileShape>
   constexpr auto get_tile(Pos &&pos, TileShape &&tile_shape) const {
     get_tile_check<Format, Pos, TileShape>();
-
     // layout is same as original layout
     using LayoutType = typename format_traits<Format>::layout_provider_type;
     auto tile_format =
         make_format(std::forward<TileShape>(tile_shape), LayoutType());
-    auto offset = LayoutType::offset(std::forward<Pos>(pos), layout());
-
+    auto tile_addr = elem_addr(pos);
     using TileFormat = decltype(tile_format);
-    using TileOffset = decltype(offset);
-
-    constexpr bool is_static_tiling =
-        hana::is_a<hana::integral_constant_tag<long long>>(offset) &&
-        hana::is_a<hana::integral_constant_tag<long long>, Addr>;
-
-    auto tile_addr = hana::if_(
-        is_static_tiling, addr() + offset * hana::llong_c<sizeof(ElemType)>,
-        (uint64_t)addr() + sizeof(ElemType) * (uint64_t)offset);
-
-    return Tensor<ElemType, TileFormat, Space, decltype(tile_addr)>(
+    using TileAddr = decltype(tile_addr);
+    return Tensor<ElemType, TileFormat, Space, TileAddr>(
         ElemType(), tile_format, Space(), tile_addr);
   }
 
   friend std::ostream &operator<<(std::ostream &os, Tensor tensor) {
     os << "Tensor@0x" << std::hex << tensor.addr() << std::dec;
+    os << "  shape: [";
+    hana::for_each(tensor.shape().dim,
+                   [&os](auto const &v) { os << v << ", "; });
+    os << "]";
     return os;
   }
 
+  void dump() const {
+    using Shape = typename format_traits<Format>::shape_type;
+    const long ELEM_PER_LINE = 8;
+    std::cout << *this;
+    if constexpr (Shape::nDims == 1) {
+      const long size = static_cast<long>(shape().dim[0_c]);
+      for (long i = 0; i < size; i++) {
+        if (i % ELEM_PER_LINE == 0) std::cout << "\n";
+        std::cout << " " << elem(Dims(i));
+      }
+      std::cout << "\n";
+    }
+    if constexpr (Shape::nDims == 2) {
+      // Here we use standard loop rather hana:for_each() because
+      // hana::for_each() might unroll the loop heavily. Compiler can also
+      // unroll and vectorize this oridinary loop. NOTE: do NOT use size_t or
+      // unsigned for i or it will compile with error "not in the same ring"
+      const long size0 = static_cast<long>(shape().dim[0_c]);
+      const long size1 = static_cast<long>(shape().dim[1_c]);
+      for (long i0 = 0; i0 < size0; i0++) {
+        for (long i1 = 0; i1 < size1; i1++) {
+          if (i1 % ELEM_PER_LINE == 0) std::cout << "\n";
+          std::cout << " " << elem(Dims(i0, i1));
+        }
+      }
+      std::cout << "\n";
+    }
+  }
+
  private:
-  static_assert(is_a<mem_space_tag, Space> && is_a<tensor_format_tag, Format> &&
-                is_integral_or_constant<Addr>);
+  static_assert(is_a<mem_space_tag, Space> && is_a<tensor_format_tag, Format>);
 
   template <typename TensorFormat, typename Pos, typename TileShape>
   constexpr void get_tile_check() const {

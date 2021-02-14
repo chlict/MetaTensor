@@ -183,8 +183,8 @@ struct AllocTensor : StaticTransform {
 //}
 //
 //// Given a sequence of IR and a map from temp_placeholders to expressions,
-///substitute each / occurence of temp_placeholder for the corresponding
-///expression
+/// substitute each / occurence of temp_placeholder for the corresponding
+/// expression
 // template <typename Sequence, typename Map>
 // auto SubstituteTemps(Sequence &&irList, Map &&map) {
 //    return hana::transform(irList, [&map](auto const &ir) {

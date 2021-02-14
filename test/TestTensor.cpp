@@ -1,3 +1,5 @@
+#include <array>
+
 #include "Tensor.hpp"
 #include "gtest/gtest.h"
 
@@ -66,4 +68,25 @@ TEST(TestTensor, Test4) {
   static_assert(dimensions.dim == tile1_dimensions.dim);
   static_assert(strides.dim == tile1_strides.dim);
   assert(tile1.addr() == tensor.addr());
+}
+
+TEST(TestTensor, Test5) {
+  std::array<std::array<float, 4>, 2> data = {
+      {0.0, 0.1, 0.2, 0.3, 1.0, 1.1, 1.2, 1.3}};
+
+  auto format = make_format(Dims(2_c, 4_c), RowMajorLayout());
+  float *addr = &data[0][0];
+  auto tensor = Tensor(float(), format, MemSpace::GM(),
+                       reinterpret_cast<uintptr_t>(addr));
+  std::cout << "aaa = " << tensor.elem(Dims(0_c, 0_c)) << std::endl;
+  tensor.dump();
+  // for (std::size_t i = 0; i < 2; i++) {
+  //   for (std::size_t j = 0; j < 4; j++) {
+  //     std::cout << "&data[" << i << "][" << j << "] =" << &data[i][j]
+  //     << "value = " << data[i][j] << std::endl;
+  //   }
+  // }
+  // std::cout << "sizeof(data[0]) = " << sizeof(data[0]) << std::endl;
+  // std::cout << "sizeof(data) = " << sizeof(data) << std::endl;
+  // std::cout << "data.data = " << data.data() << std::endl;
 }

@@ -4,38 +4,58 @@
 
 #include "Tensor.hpp"
 
-template <typename Tensor1, typename Tensor2,
-          template <typename, typename> class ArchTMov>
-struct BaseTMov {
-  static_assert(is_tensor_type<Tensor1> && is_tensor_type<Tensor2>);
-  const Tensor1 &output_;
-  const Tensor2 &input_;
+// Implement tensor operations on host
+namespace arch {
+struct Host;
+}
 
-  constexpr BaseTMov(Tensor1 const &output, Tensor2 const &input)
-      : output_(output), input_(input) {}
+template <typename Dst, typename Src, typename ArchTag = arch::Host>
+struct UnaryOp {
+  static_assert(is_tensor_type<std::remove_reference_t<Dst>>);
+  static_assert(is_tensor_type<std::remove_reference_t<Src>>);
 
-  constexpr BaseTMov(BaseTMov const &other)
-      : output_(other.output_), input_(other.input_) {}
+  const Dst &dst_;
+  const Src &src_;
 
-  constexpr BaseTMov(BaseTMov &&other)
-      : output_(std::move(other.output_)), input_(std::move(other.input_)) {}
+  constexpr UnaryOp(Dst const &dst, Src const &src) : dst_(dst), src_(src) {}
 
-  constexpr auto output() const { return output_; }
+  constexpr UnaryOp(UnaryOp const &other)
+      : dst_(other.dst_), src_(other.src_) {}
 
-  constexpr auto input() const { return input_; }
+  constexpr UnaryOp(UnaryOp &&other)
+      : dst_(std::move(other.dst_)), src_(std::move(other.src_)) {}
+
+  constexpr auto dst() const { return dst_; }
+
+  constexpr auto src() const { return src_; }
+};
+
+// Subclasses of UnaryOp, which only need to implement:
+// (1) constructors
+// (2) the gen_code() function
+template <typename Dst, typename Src, typename ArchTag = arch::Host>
+struct TMov : public UnaryOp<Dst, Src, ArchTag> {
+  using Base = UnaryOp<Dst, Src, ArchTag>;
+
+  constexpr TMov(Dst const &dst, Src const &src) : Base(dst, src) {}
+
+  constexpr TMov(TMov const &other) : Base(other) {}
+
+  constexpr TMov(TMov &&other) : Base(std::move(other)) {}
 
   constexpr auto gen_code() const {
-    // if constexpr (Backend::has_tmov) {
-    //   Backend *p_backend = static_cast<Backend *>(this);
-    //   return p_backend->gen_code();
-    // }
     // Calc params
-    auto dimensions1 = output().dimensions();
-    auto dimensions2 = input().dimensions();
+    auto dimensions1 = Base::dst().dimensions();
+    auto dimensions2 = Base::src().dimensions();
 
     auto fn = [dimensions1, dimensions2]() {
-      printf("tmov(tensor %lu, tensor %lu)\n", dimensions1.nDims,
+      printf("Host tmov(tensor %lu, tensor %lu)\n", dimensions1.nDims,
              dimensions2.nDims);
+      // dimensions1 should be same with dimentions2
+      // constexpr int nDims = decltype(dimensions1)::nDims;
+      // for (int di = 0; di < nDims; di++) {
+
+      // }
     };
     return fn;
   }
