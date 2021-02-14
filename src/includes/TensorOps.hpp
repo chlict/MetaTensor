@@ -5,19 +5,19 @@
 #include "Tensor.hpp"
 
 template <typename Tensor1, typename Tensor2,
-          typename = std::enable_if_t<
-              is_tensor_type<Tensor1> && is_tensor_type<Tensor2>, void>>
-struct TMov {
+          template <typename, typename> class ArchTMov>
+struct BaseTMov {
+  static_assert(is_tensor_type<Tensor1> && is_tensor_type<Tensor2>);
   const Tensor1 &output_;
   const Tensor2 &input_;
 
-  constexpr TMov(Tensor1 const &output, Tensor2 const &input)
+  constexpr BaseTMov(Tensor1 const &output, Tensor2 const &input)
       : output_(output), input_(input) {}
 
-  constexpr TMov(TMov const &other)
+  constexpr BaseTMov(BaseTMov const &other)
       : output_(other.output_), input_(other.input_) {}
 
-  constexpr TMov(TMov &&other)
+  constexpr BaseTMov(BaseTMov &&other)
       : output_(std::move(other.output_)), input_(std::move(other.input_)) {}
 
   constexpr auto output() const { return output_; }
@@ -25,6 +25,10 @@ struct TMov {
   constexpr auto input() const { return input_; }
 
   constexpr auto gen_code() const {
+    // if constexpr (Backend::has_tmov) {
+    //   Backend *p_backend = static_cast<Backend *>(this);
+    //   return p_backend->gen_code();
+    // }
     // Calc params
     auto dimensions1 = output().dimensions();
     auto dimensions2 = input().dimensions();
