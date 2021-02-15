@@ -70,11 +70,11 @@ struct Tensor : TensorHandle {
   constexpr auto elem_addr(Pos const &pos) const {
     using Layout = typename format_traits<Format>::layout_provider_type;
     auto offset = Layout::offset(pos, layout());
-    constexpr bool is_constant =
+    constexpr bool is_const =
         hana::is_a<hana::integral_constant_tag<long long>>(offset) &&
         hana::is_a<hana::integral_constant_tag<long long>, Addr>;
 
-    if constexpr (is_constant) {
+    if constexpr (is_const) {
       return addr() + offset * hana::llong_c<sizeof(ElemType)>;
     } else {
       return (uint64_t)addr() + sizeof(ElemType) * (uint64_t)offset;
