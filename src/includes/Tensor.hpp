@@ -64,10 +64,6 @@ struct Tensor : TensorHandle {
 
   constexpr auto layout() const { return format_.layout(); }
 
-  constexpr auto dimensions() const { return format_.dimensions(); }
-
-  constexpr auto strides() const { return format_.strides(); }
-
   // Get the address of an element at specified postion (coorination).
   template <typename Pos>
   constexpr ElemType *elem_addr(Pos const &pos) const {

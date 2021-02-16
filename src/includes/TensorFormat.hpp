@@ -15,9 +15,10 @@ struct tensor_format_tag;
 template <typename Shape, typename Layout, typename LayoutProvider>
 struct TensorFormat {
   static_assert(is_dims_type<Shape> && is_layout_type<Layout>);
-
   using tag = tensor_format_tag;
 
+  // NOTE: do not make them private. Due to clang issues, format.shape_ behaves
+  // differently with format.shape() in static_assert expressions.
   Shape shape_;
   Layout layout_;
 

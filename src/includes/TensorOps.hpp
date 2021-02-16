@@ -149,8 +149,8 @@ struct TAdd {
 template <typename Tensor1, typename Tensor2>
 constexpr auto tmov1(Tensor1 &&tensor1, Tensor2 &&tensor2) {
   static_assert(is_tensor_type<std::remove_reference_t<Tensor1>>);
-  auto dimensions1 = tensor1.dimensions();
-  auto dimensions2 = tensor2.dimensions();
+  auto dimensions1 = tensor1.layout().dimensions();
+  auto dimensions2 = tensor2.layout().dimensions();
   printf("tmov1(tensor %lu, tensor %lu)\n", dimensions1.nDims,
          dimensions2.nDims);
 }
@@ -158,8 +158,8 @@ constexpr auto tmov1(Tensor1 &&tensor1, Tensor2 &&tensor2) {
 template <typename Tensor1, typename Tensor2>
 constexpr auto tadd1(Tensor1 &&tensor1, Tensor2 &&tensor2) {
   static_assert(is_tensor_type<std::remove_reference_t<Tensor1>>);
-  auto dimensions1 = tensor1.dimensions();
-  auto dimensions2 = tensor2.dimensions();
+  auto dimensions1 = tensor1.layout().dimensions();
+  auto dimensions2 = tensor2.layout().dimensions();
   printf("tadd1(tensor %lu, tensor %lu)\n", dimensions1.nDims,
          dimensions2.nDims);
 }

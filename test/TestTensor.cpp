@@ -59,9 +59,9 @@ TEST(TestTensor, Test2) {
   auto shape_1 = tensor2.shape().dim[1_c];
   static_assert(shape_0 == 2_c && shape_1 == 4_c);
 
-  auto dimensions_0 = tensor2.dimensions().dim[0_c];
+  auto dimensions_0 = tensor2.layout().dimensions().dim[0_c];
   static_assert(dimensions_0 == 4_c);
-  auto stride_0 = tensor2.strides().dim[0_c];
+  auto stride_0 = tensor2.layout().strides().dim[0_c];
   static_assert(stride_0 == 1_c);
 }
 
