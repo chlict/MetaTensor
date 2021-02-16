@@ -6,7 +6,7 @@ TEST(TestExprList, Test1) {
   auto list1 = ExprBlock{1_p + 2_p, 2_p * 3_p};
   std::cout << list1 << std::endl;
 
-  // Actuall only assign expressions can be code generated for.
+  // Actually only assign expressions can be code generated for.
   list1.gen_code(1, 2, 3);
 }
 
@@ -15,7 +15,7 @@ TEST(TestExprBlock, Test2) {
   auto tensor1 = TensorE((float *)0x10, format1);
   auto tensor2 = TensorE((float *)0x20, format1);
   auto tensor3 = TensorE((float *)0x30, format1);
-  auto temp_1 = TensorE((float *)0x40, format1);
+  auto temp_1  = TensorE((float *)0x40, format1);
 
   auto add_mul =
       ExprBlock{temp_1 = tensor1 + tensor2, tensor3 = temp_1 * tensor3};
