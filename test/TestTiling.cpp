@@ -40,7 +40,7 @@ TEST(TestTiling, Test2) {
 
 TEST(TestTiling, Test3) {
   auto format = make_format(Dim1(4_c), VectorLayout());
-  auto tensor = Tensor(float(), format, MemSpace::GM(), 0x1000);
+  auto tensor = Tensor((float *)0x1000, format);
 
   auto tiling1d = Tiling1D(TRange(0_c, 4_c, 2_c, 1_c));
   std::cout << tiling1d << std::endl;

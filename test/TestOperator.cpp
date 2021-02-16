@@ -7,7 +7,7 @@
 
 TEST(TestOperator, Test1) {
   auto format1 = make_format(Dims(2, 4), RowMajorLayout());
-  auto tensor1 = Tensor(float(), format1, MemSpace::GM(), 0x10);
+  auto tensor1 = Tensor((float *)0x10, format1);
 
   auto range_row = TRange(0_c, 4_c, 2_c);
   auto range_col = TRange(0_c, 8_c, 2_c);
@@ -19,8 +19,8 @@ TEST(TestOperator, Test1) {
 
 TEST(TestOperator, Test2) {
   auto format1 = make_format(Dims(2, 8), RowMajorLayout());
-  auto tensor1 = Tensor(float(), format1, MemSpace::GM(), 0x10);
-  auto tensor2 = Tensor(float(), format1, MemSpace::GM(), 0x20);
+  auto tensor1 = Tensor((float *)0x10, format1);
+  auto tensor2 = Tensor((float *)0x20, format1);
 
   auto range_row = TRange(0_c, 4_c, 2_c);
   auto range_col = TRange(0_c, 8_c, 2_c);
@@ -38,8 +38,8 @@ TEST(TestOperator, Test2) {
 
 TEST(TestOperator, Test3) {
   auto format1 = make_format(Dims(4, 6), RowMajorLayout());
-  auto tensor1 = Tensor(float(), format1, MemSpace::GM(), 0x10);
-  auto tensor2 = Tensor(float(), format1, MemSpace::GM(), 0x20);
+  auto tensor1 = Tensor((float *)0x10, format1);
+  auto tensor2 = Tensor((float *)0x20, format1);
 
   auto range_row = TRange(0_c, 4_c, 2_c);
   auto range_col = TRange(0_c, 6_c, 2_c);

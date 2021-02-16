@@ -12,10 +12,10 @@ TEST(TestExprList, Test1) {
 
 TEST(TestExprBlock, Test2) {
   auto format1 = make_format(Dim2(2, 4), RowMajorLayout());
-  auto tensor1 = TensorE(float(), format1, MemSpace::GM(), 0x10);
-  auto tensor2 = TensorE(float(), format1, MemSpace::GM(), 0x20);
-  auto tensor3 = TensorE(float(), format1, MemSpace::GM(), 0x30);
-  auto temp_1 = TensorE(float(), format1, MemSpace::GM(), 0x40);
+  auto tensor1 = TensorE((float *)0x10, format1);
+  auto tensor2 = TensorE((float *)0x20, format1);
+  auto tensor3 = TensorE((float *)0x30, format1);
+  auto temp_1 = TensorE((float *)0x40, format1);
 
   auto add_mul =
       ExprBlock{temp_1 = tensor1 + tensor2, tensor3 = temp_1 * tensor3};
@@ -26,9 +26,9 @@ TEST(TestExprBlock, Test2) {
 
 TEST(TestExprBlock, Test3) {
   auto format1 = make_format(Dim2(2, 4), RowMajorLayout());
-  auto tensor1 = Tensor(float(), format1, MemSpace::GM(), 0x10);
-  auto tensor2 = Tensor(float(), format1, MemSpace::GM(), 0x20);
-  auto tensor3 = Tensor(float(), format1, MemSpace::GM(), 0x30);
+  auto tensor1 = Tensor((float *)0x10, format1);
+  auto tensor2 = Tensor((float *)0x20, format1);
+  auto tensor3 = Tensor((float *)0x30, format1);
 
   auto add_mul = ExprBlock{_t1 = 1_p + 2_p, _t2 = _t1 * 3_p};
 
@@ -38,9 +38,9 @@ TEST(TestExprBlock, Test3) {
 
 TEST(TestExprBlock, Test4) {
   auto format1 = make_format(Dim2(2, 4), RowMajorLayout());
-  auto tensor1 = Tensor(float(), format1, MemSpace::GM(), 0x10);
-  auto tensor2 = Tensor(float(), format1, MemSpace::GM(), 0x20);
-  auto tensor3 = Tensor(float(), format1, MemSpace::GM(), 0x30);
+  auto tensor1 = Tensor((float *)0x10, format1);
+  auto tensor2 = Tensor((float *)0x20, format1);
+  auto tensor3 = Tensor((float *)0x30, format1);
 
   auto add_mul = ExprBlock{_t1 = 1_p + 2_p, _t2 = _t1 * 3_p};
 

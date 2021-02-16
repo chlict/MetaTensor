@@ -55,10 +55,10 @@ constexpr auto deduce_tensor(Lhs &&lhs, ExprMap &&map) {
   static_assert(is_tensor_type<TensorType>);
 
   using ElemType = typename tensor_traits<TensorType>::elem_type;
-  using Space = typename tensor_traits<TensorType>::space;
+  using Space = typename tensor_traits<TensorType>::space_type;
   // TODO: alloc address for result_tensor
   auto result_tensor =
-      Tensor(ElemType(), src_tensor.format(), Space(), src_tensor.addr());
+      Tensor((ElemType *)src_tensor.addr(), src_tensor.format(), Space());
   return result_tensor;
 }
 

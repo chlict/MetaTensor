@@ -1,3 +1,4 @@
+#include <memory>
 #include <array>
 
 #include "Tensor.hpp"
@@ -5,23 +6,48 @@
 
 TEST(TestTensor, Test1) {
   auto format1 = make_format(Dims(2, 4), RowMajorLayout());
-  auto tensor1 = Tensor(float(), format1, MemSpace::GM(), 0x1000);
-
-  using T = decltype(tensor1);
-  static_assert(std::is_same_v<tensor_traits<T>::elem_type, float>);
-  static_assert(std::is_same_v<tensor_traits<T>::space, MemSpace::GM>);
+  {
+    // Test constructor and template type deduction
+    auto tensor1 = Tensor((float *)0x1000, format1);
+    using T = decltype(tensor1);
+    static_assert(std::is_same_v<tensor_traits<T>::elem_type, float>);
+    static_assert(std::is_same_v<tensor_traits<T>::space_type, MemSpace::GM>);
+  }
+  {
+    // Test unique_ptr
+    std::unique_ptr<float> p = std::make_unique<float>(0.1);
+    auto tensor2 = Tensor(p.get(), format1, MemSpace::Host{});
+    using T2 = decltype(tensor2);
+    static_assert(std::is_same_v<tensor_traits<T2>::elem_type, float>);
+    static_assert(std::is_same_v<tensor_traits<T2>::space_type, MemSpace::Host>);
+  }
+  {
+    // Test unique_ptr to array
+    std::unique_ptr<double[]> up_array(new double[8]);
+    auto tensor = Tensor(up_array.get(), format1, MemSpace::Host());
+    using T = decltype(tensor);
+    static_assert(std::is_same_v<tensor_traits<T>::elem_type, double>);
+    static_assert(std::is_same_v<tensor_traits<T>::space_type, MemSpace::Host>);
+  }
+  {
+    // Test make_tensor
+    auto tensor = make_tensor<float, MemSpace::Host>((float *)0x2000, format1);
+    using T = decltype(tensor);
+    static_assert(std::is_same_v<tensor_traits<T>::space_type, MemSpace::Host>);
+    static_assert(std::is_same_v<tensor_traits<T>::elem_type, float>);
+  }
 }
 
 auto fn_copy = [](auto &&tensor) { return tensor; };
 
 TEST(TestTensor, Test2) {
   auto format1 = make_format(Dims(2_c, 4_c), RowMajorLayout());
-  auto tensor1 = Tensor(float(), format1, MemSpace::GM(), 0x1000);
+  auto tensor1 = Tensor((float *)0x1000, format1);
   auto tensor2 = fn_copy(tensor1);
 
   using T = decltype(tensor2);
   static_assert(std::is_same_v<tensor_traits<T>::elem_type, float>);
-  static_assert(std::is_same_v<tensor_traits<T>::space, MemSpace::GM>);
+  static_assert(std::is_same_v<tensor_traits<T>::space_type, MemSpace::GM>);
 
   auto format2 = tensor2.format();
   auto shape = format2.shape();
@@ -41,12 +67,12 @@ TEST(TestTensor, Test2) {
 
 TEST(TestTensor, Test3) {
   auto format1 = make_format(Dims(2_c, 4_c), RowMajorLayout());
-  auto tensor1 = Tensor(float(), format1, MemSpace::GM(), 0x1000);
+  auto tensor1 = Tensor((float *)0x1000, format1);
   TensorHandle &th = tensor1;
   using T1 = decltype(tensor1);
   auto tensor2 = static_cast<T1 &>(th);
-  print_type_name(tensor1);
-  print_type_name(tensor2);
+  // print_type_name(tensor1);
+  // print_type_name(tensor2);
   auto shape_0 = tensor2.shape().dim[0_c];
   static_assert(shape_0 == 2_c);
 
@@ -56,7 +82,7 @@ TEST(TestTensor, Test3) {
 
 TEST(TestTensor, Test4) {
   auto format = make_format(Dims(2_c, 4_c), RowMajorLayout());
-  auto tensor = Tensor(float(), format, MemSpace::GM(), 0x1000);
+  auto tensor = Tensor((float *)0x1000, format);
   auto layout = tensor.layout();
   auto dimensions = layout.dimensions();
   auto strides = layout.strides();
@@ -71,22 +97,13 @@ TEST(TestTensor, Test4) {
 }
 
 TEST(TestTensor, Test5) {
-  std::array<std::array<float, 4>, 2> data = {
-      {0.0, 0.1, 0.2, 0.3, 1.0, 1.1, 1.2, 1.3}};
+  std::array<std::array<float, 4>, 2> data = {0.0, 0.1, 0.2, 0.3,
+					      1.0, 1.1, 1.2, 1.3
+  };
 
   auto format = make_format(Dims(2_c, 4_c), RowMajorLayout());
   float *addr = &data[0][0];
-  auto tensor = Tensor(float(), format, MemSpace::GM(),
-                       reinterpret_cast<uintptr_t>(addr));
-  std::cout << "aaa = " << tensor.elem(Dims(0_c, 0_c)) << std::endl;
+  auto tensor = Tensor(addr, format);
+  assert(tensor.elem(Dims(1_c, 3_c)) == (float)1.3);
   tensor.dump();
-  // for (std::size_t i = 0; i < 2; i++) {
-  //   for (std::size_t j = 0; j < 4; j++) {
-  //     std::cout << "&data[" << i << "][" << j << "] =" << &data[i][j]
-  //     << "value = " << data[i][j] << std::endl;
-  //   }
-  // }
-  // std::cout << "sizeof(data[0]) = " << sizeof(data[0]) << std::endl;
-  // std::cout << "sizeof(data) = " << sizeof(data) << std::endl;
-  // std::cout << "data.data = " << data.data() << std::endl;
 }

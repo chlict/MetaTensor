@@ -3,10 +3,10 @@
 
 TEST(TestExprCompiler, Test1) {
   auto format1 = make_format(Dim2(2_c, 4_c), RowMajorLayout());
-  auto tensor1 = Tensor(float(), format1, MemSpace::GM(), 0x10);
-  auto tensor2 = Tensor(float(), format1, MemSpace::GM(), 0x20);
-  auto tensor3 = Tensor(float(), format1, MemSpace::GM(), 0x30);
-  auto tensor4 = Tensor(float(), format1, MemSpace::GM(), 0x40);
+  auto tensor1 = Tensor((float *)0x10, format1);
+  auto tensor2 = Tensor((float *)0x20, format1);
+  auto tensor3 = Tensor((float *)0x30, format1);
+  auto tensor4 = Tensor((float *)0x40, format1);
 
   auto term1 = yap::make_terminal(tensor1);
   auto term2 = yap::make_terminal(tensor2);
@@ -21,10 +21,10 @@ TEST(TestExprCompiler, Test1) {
 // Use TensorE instead of yap::make_terminal
 TEST(TestExprCompiler, Test2) {
   auto format1 = make_format(Dim2(2_c, 4_c), RowMajorLayout());
-  auto tensor1 = TensorE(float(), format1, MemSpace::GM(), 0x10);
-  auto tensor2 = TensorE(float(), format1, MemSpace::GM(), 0x20);
-  auto tensor3 = TensorE(float(), format1, MemSpace::GM(), 0x30);
-  auto tensor4 = TensorE(float(), format1, MemSpace::GM(), 0x40);
+  auto tensor1 = TensorE((float *)0x10, format1);
+  auto tensor2 = TensorE((float *)0x20, format1);
+  auto tensor3 = TensorE((float *)0x30, format1);
+  auto tensor4 = TensorE((float *)0x40, format1);
 
   auto expr = tensor1 + tensor2 * tensor3 + tensor4;
 
@@ -35,10 +35,10 @@ TEST(TestExprCompiler, Test2) {
 // Use placeholder and tensor as arguments
 TEST(TestExprCompiler, Test3) {
   auto format1 = make_format(Dim2(2, 4), RowMajorLayout());
-  auto tensor1 = Tensor(float(), format1, MemSpace::GM(), 0x10);
-  auto tensor2 = Tensor(float(), format1, MemSpace::GM(), 0x20);
-  auto tensor3 = Tensor(float(), format1, MemSpace::GM(), 0x30);
-  auto tensor4 = Tensor(float(), format1, MemSpace::GM(), 0x40);
+  auto tensor1 = Tensor((float *)0x10, format1);
+  auto tensor2 = Tensor((float *)0x20, format1);
+  auto tensor3 = Tensor((float *)0x30, format1);
+  auto tensor4 = Tensor((float *)0x40, format1);
 
   using namespace boost::yap::literals;
 
@@ -50,10 +50,10 @@ TEST(TestExprCompiler, Test3) {
 // Use lambda
 TEST(TestExprCompiler, Test4) {
   auto format1 = make_format(Dim2(2, 4), RowMajorLayout());
-  auto tensor1 = Tensor(float(), format1, MemSpace::GM(), 0x10);
-  auto tensor2 = Tensor(float(), format1, MemSpace::GM(), 0x20);
-  auto tensor3 = Tensor(float(), format1, MemSpace::GM(), 0x30);
-  auto tensor4 = Tensor(float(), format1, MemSpace::GM(), 0x40);
+  auto tensor1 = Tensor((float *)0x10, format1);
+  auto tensor2 = Tensor((float *)0x20, format1);
+  auto tensor3 = Tensor((float *)0x30, format1);
+  auto tensor4 = Tensor((float *)0x40, format1);
 
   auto add_mul = [](auto &&...args) {
     using namespace boost::yap::literals;

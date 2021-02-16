@@ -35,9 +35,9 @@ TEST_F(TestCodeGen, DynamicShape1) {
   auto height = GetHeight();
   auto width = GetWidth();
   auto format1 = make_format(Dim2(height, width), RowMajorLayout());
-  auto tensor1 = Tensor(float(), format1, MemSpace::GM(), 0x1000);
-  auto tensor2 = Tensor(float(), format1, MemSpace::GM(), 0x2000);
-  auto tensor3 = Tensor(float(), format1, MemSpace::GM(), 0x3000);
+  auto tensor1 = Tensor((float *)0x1000, format1);
+  auto tensor2 = Tensor((float *)0x2000, format1);
+  auto tensor3 = Tensor((float *)0x3000, format1);
 
   auto term1 = yap::make_terminal(tensor1);
   auto term2 = yap::make_terminal(tensor2);
@@ -60,9 +60,9 @@ TEST_F(TestCodeGen, StaticShape1) {
   auto height = 2_c;
   auto width = 4_c;
   auto format1 = make_format(Dim2(height, width), RowMajorLayout());
-  auto tensor1 = Tensor(float(), format1, MemSpace::GM(), 0x1000);
-  auto tensor2 = Tensor(float(), format1, MemSpace::GM(), 0x2000);
-  auto tensor3 = Tensor(float(), format1, MemSpace::GM(), 0x3000);
+  auto tensor1 = Tensor((float *)0x1000, format1);
+  auto tensor2 = Tensor((float *)0x2000, format1);
+  auto tensor3 = Tensor((float *)0x3000, format1);
 
   auto term1 = yap::make_terminal(tensor1);
   auto term2 = yap::make_terminal(tensor2);

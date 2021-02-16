@@ -74,8 +74,6 @@ struct TMov : public UnaryOp<Dst, Src, ArchTag> {
     // Use layout rather than shape for better performance
     auto layout_dst = Base::dst().layout();
     auto layout_src = Base::src().layout();
-    auto dimensions1 = Base::dst().dimensions();
-    auto dimensions2 = Base::src().dimensions();
     using ElemType = typename tensor_traits<Dst>::elem_type;
     ElemType *start_dst = (ElemType *)(uintptr_t)(Base::dst().addr());
     ElemType *start_src = (ElemType *)(uintptr_t)(Base::src().addr());
@@ -83,7 +81,6 @@ struct TMov : public UnaryOp<Dst, Src, ArchTag> {
     auto fn = [start_dst, start_src, layout_dst, layout_src]() {
       // dimensions1 should be same with dimentions2
       constexpr int nDims = decltype(layout_dst.dimensions())::nDims;
-      printf("Host tmov: nDims = %d\n", nDims);
       // TODO: do dim collapse to group consecutive dims together
       // For each dim i, do a copy from src.dim[i] to dst.dim[i]
       auto cp = [](ElemType *de, ElemType const *se) {

@@ -5,10 +5,10 @@
 
 TEST(TestAllocTensor, Test1) {
   auto format1 = make_format(Dim2(2_c, 4_c), RowMajorLayout());
-  auto tensor1 = Tensor(float(), format1, MemSpace::GM(), 0x10);
-  auto tensor2 = Tensor(float(), format1, MemSpace::GM(), 0x20);
-  auto tensor3 = Tensor(float(), format1, MemSpace::GM(), 0x30);
-  auto tensor4 = Tensor(float(), format1, MemSpace::GM(), 0x40);
+  auto tensor1 = Tensor((float *)0x10, format1);
+  auto tensor2 = Tensor((float *)0x20, format1);
+  auto tensor3 = Tensor((float *)0x30, format1);
+  auto tensor4 = Tensor((float *)0x40, format1);
 
   auto term1 = yap::make_terminal(tensor1);
   auto term2 = yap::make_terminal(tensor2);
