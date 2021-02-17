@@ -21,6 +21,49 @@ struct MemSpace {
   };
 };
 
+namespace detail {
+
+const long ELEM_PER_LINE = 8;
+
+template <int DIM, typename Tensor>
+struct TensorHelper;
+
+// Specilization for DIM 1
+template <typename Tensor>
+struct TensorHelper<1, Tensor> {
+  static void dump(Tensor const &tensor) {
+    // NOTE: do NOT use size_t or unsigned for i or it will compile with error
+    // "not in the same ring"
+    const long size = tensor.shape().dim[0_c];
+    for (long i = 0; i < size; i++) {
+      if (i % ELEM_PER_LINE == 0) std::cout << "\n";
+      std::cout << " " << tensor.elem(Dims(i));
+    }
+    std::cout << "\n";
+  }
+};
+
+// Specilization for DIM 2
+template <typename Tensor>
+struct TensorHelper<2, Tensor> {
+  static void dump(Tensor const &tensor) {
+    // Here we use standard loop rather hana:for_each() because
+    // hana::for_each() might unroll the loop heavily. Compiler can also
+    // unroll and vectorize this oridinary loop.
+    const long size0 = tensor.shape().dim[0_c];
+    const long size1 = tensor.shape().dim[1_c];
+    for (long i0 = 0; i0 < size0; i0++) {
+      for (long i1 = 0; i1 < size1; i1++) {
+        if (i1 % ELEM_PER_LINE == 0) std::cout << "\n";
+        std::cout << " " << tensor.elem(Dims(i0, i1));
+      }
+    }
+    std::cout << "\n";
+  }
+};
+
+}  // namespace detail
+
 struct TensorHandle {
   friend std::ostream &operator<<(std::ostream &os,
                                   TensorHandle const &handle) {
@@ -92,10 +135,9 @@ struct Tensor : TensorHandle {
     using LayoutType = typename format_traits<Format>::layout_provider_type;
     auto tile_format =
         make_format(std::forward<TileShape>(tile_shape), LayoutType());
-    auto tile_addr = elem_addr(pos);
     using TileFormat = decltype(tile_format);
-    return Tensor<ElemType, TileFormat, Space>((ElemType *)tile_addr,
-                                               tile_format);
+    ElemType *tile_addr = elem_addr(pos);
+    return Tensor<ElemType, TileFormat, Space>(tile_addr, tile_format);
   }
 
   friend std::ostream &operator<<(std::ostream &os, Tensor tensor) {
@@ -107,33 +149,11 @@ struct Tensor : TensorHandle {
     return os;
   }
 
+  // Dump each element of the tensor
   void dump() const {
-    using Shape = typename format_traits<Format>::shape_type;
-    const long ELEM_PER_LINE = 8;
     std::cout << *this;
-    if constexpr (Shape::nDims == 1) {
-      const long size = static_cast<long>(shape().dim[0_c]);
-      for (long i = 0; i < size; i++) {
-        if (i % ELEM_PER_LINE == 0) std::cout << "\n";
-        std::cout << " " << elem(Dims(i));
-      }
-      std::cout << "\n";
-    }
-    if constexpr (Shape::nDims == 2) {
-      // Here we use standard loop rather hana:for_each() because
-      // hana::for_each() might unroll the loop heavily. Compiler can also
-      // unroll and vectorize this oridinary loop. NOTE: do NOT use size_t or
-      // unsigned for i or it will compile with error "not in the same ring"
-      const long size0 = static_cast<long>(shape().dim[0_c]);
-      const long size1 = static_cast<long>(shape().dim[1_c]);
-      for (long i0 = 0; i0 < size0; i0++) {
-        for (long i1 = 0; i1 < size1; i1++) {
-          if (i1 % ELEM_PER_LINE == 0) std::cout << "\n";
-          std::cout << " " << elem(Dims(i0, i1));
-        }
-      }
-      std::cout << "\n";
-    }
+    using Shape = typename format_traits<Format>::shape_type;
+    detail::TensorHelper<Shape::nDims, Tensor>::dump(*this);
   }
 
  private:
@@ -158,8 +178,8 @@ constexpr auto make_tensor(ElemType *data, Format const &format) {
 
 // Tensor expression - a boost::yap's terminal of Tensor
 template <typename ElemType, typename Format, typename Space = MemSpace::GM>
-constexpr auto TensorE(ElemType *addr, Format const &format,
-                       Space const &space = MemSpace::GM()) {
+constexpr auto TensorExpr(ElemType *addr, Format const &format,
+                          Space const &space = MemSpace::GM()) {
   static_assert(is_a<mem_space_tag, Space>);
   static_assert(is_a<tensor_format_tag, Format>);
 

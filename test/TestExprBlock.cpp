@@ -12,10 +12,10 @@ TEST(TestExprList, Test1) {
 
 TEST(TestExprBlock, Test2) {
   auto format1 = make_format(Dim2(2, 4), RowMajorLayout());
-  auto tensor1 = TensorE((float *)0x10, format1);
-  auto tensor2 = TensorE((float *)0x20, format1);
-  auto tensor3 = TensorE((float *)0x30, format1);
-  auto temp_1  = TensorE((float *)0x40, format1);
+  auto tensor1 = TensorExpr((float *)0x10, format1);
+  auto tensor2 = TensorExpr((float *)0x20, format1);
+  auto tensor3 = TensorExpr((float *)0x30, format1);
+  auto temp_1  = TensorExpr((float *)0x40, format1);
 
   auto add_mul =
       ExprBlock{temp_1 = tensor1 + tensor2, tensor3 = temp_1 * tensor3};

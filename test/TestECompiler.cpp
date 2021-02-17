@@ -18,13 +18,13 @@ TEST(TestExprCompiler, Test1) {
   launch(codes);
 }
 
-// Use TensorE instead of yap::make_terminal
+// Use TensorExpr instead of yap::make_terminal
 TEST(TestExprCompiler, Test2) {
   auto format1 = make_format(Dim2(2_c, 4_c), RowMajorLayout());
-  auto tensor1 = TensorE((float *)0x10, format1);
-  auto tensor2 = TensorE((float *)0x20, format1);
-  auto tensor3 = TensorE((float *)0x30, format1);
-  auto tensor4 = TensorE((float *)0x40, format1);
+  auto tensor1 = TensorExpr((float *)0x10, format1);
+  auto tensor2 = TensorExpr((float *)0x20, format1);
+  auto tensor3 = TensorExpr((float *)0x30, format1);
+  auto tensor4 = TensorExpr((float *)0x40, format1);
 
   auto expr = tensor1 + tensor2 * tensor3 + tensor4;
 
