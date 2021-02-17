@@ -31,14 +31,14 @@ struct AbstractLayoutProvider {
   }
 
   template <typename Pos, typename Layout>
-  static constexpr auto offset(Pos &&pos, Layout &&layout) {
+  static constexpr auto offset(Layout &&layout, Pos &&pos) {
     static_assert(is_dims_type<std::remove_reference_t<Pos> >);
     static_assert(is_layout_type<std::remove_reference_t<Layout> >);
     auto dimensions = view_to_dimensions(std::forward<Pos>(pos));
     auto strides = layout.strides();
     // Takes RowMajorLayout for example:
     // view:         [rows: 2, cols: 4]
-    // layout.shape  [dim0: 4, dim0: 2]
+    // layout.dimens [dim0: 4, dim0: 2]
     // layout.strides[dim0: 1, dim1: 4]
     // pos:          [row:  1, col:  2]
     // dimensions:   [dim0: 2, dim1: 1]

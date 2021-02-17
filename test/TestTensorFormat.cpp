@@ -48,8 +48,8 @@ TEST(TestTensorFormat, TestRowMajor) {
 
   auto layout = format.layout();
   auto off1 =
-      AbstractLayoutProvider<RowMajorLayout>::offset(Dim2(1_c, 2_c), layout);
-  auto off2 = RowMajorLayout::offset(Dim2(1_c, 2_c), layout);
+      AbstractLayoutProvider<RowMajorLayout>::offset(layout, Dim2(1_c, 2_c));
+  auto off2 = RowMajorLayout::offset(layout, Dim2(1_c, 2_c));
   static_assert(off1 == off2);
   static_assert(off1 == 6_c);
 }
@@ -64,8 +64,8 @@ TEST(TestTensorFormat, TestColMajor) {
 
   auto layout = format.layout();
   auto off1 =
-      AbstractLayoutProvider<ColMajorLayout>::offset(Dim2(1_c, 2_c), layout);
-  auto off2 = ColMajorLayout::offset(Dim2(1_c, 2_c), layout);
+      AbstractLayoutProvider<ColMajorLayout>::offset(layout, Dim2(1_c, 2_c));
+  auto off2 = ColMajorLayout::offset(layout, Dim2(1_c, 2_c));
   static_assert(off1 == off2);
   static_assert(off1 == 5_c);
 }
@@ -99,7 +99,7 @@ TEST(TestTensorFormat, TestOffset1) {
     auto pos = Dim2(row, col);
     using LayoutProvider =
         typename format_traits<decltype(format1)>::layout_provider_type;
-    auto offset = LayoutProvider::offset(pos, layout1);
+    auto offset = LayoutProvider::offset(layout1, pos);
     static_assert(offset == row * 4_c + col);
     // std::cout << "offset: " << offset << std::endl;
   });
@@ -122,7 +122,7 @@ TEST(TestTensorFormat, TestOffset2) {
     auto pos = Dim2(row, col);
     using LayoutProvider =
         typename format_traits<decltype(format1)>::layout_provider_type;
-    auto offset = LayoutProvider::offset(pos, layout1);
+    auto offset = LayoutProvider::offset(layout1, pos);
     static_assert(offset == col * 2_c + row);
     // std::cout << "offset: " << offset << std::endl;
   });

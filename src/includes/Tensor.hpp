@@ -113,7 +113,7 @@ struct Tensor : TensorHandle {
   template <typename Pos>
   constexpr ElemType *elem_addr(Pos const &pos) const {
     using Layout = typename format_traits<Format>::layout_provider_type;
-    auto offset = Layout::offset(pos, layout());
+    auto offset = Layout::offset(layout(), pos);
     return (ElemType *)addr() + (long)offset;
   }
 
