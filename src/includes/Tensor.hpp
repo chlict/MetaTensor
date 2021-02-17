@@ -145,8 +145,11 @@ struct Tensor : TensorHandle {
   friend std::ostream &operator<<(std::ostream &os, Tensor tensor) {
     os << "Tensor@0x" << std::hex << tensor.addr() << std::dec;
     os << "  shape: [";
-    hana::for_each(tensor.shape().dim,
-                   [&os](auto const &v) { os << v << ", "; });
+    // print each dim of tensor shape
+    hana::fold_left(tensor.shape().dim, [&os](auto const &v1, auto const &v2) {
+      os << v1 << ", " << v2;
+      return "";  // accumulated state
+    });
     os << "]";
     return os;
   }
@@ -178,6 +181,15 @@ constexpr auto make_tensor(ElemType *data, Format const &format) {
   return Tensor<ElemType, Format, Space>(data, format, Space());
 }
 
+template <typename T>
+struct tensor_traits;
+
+template <typename ElemType, typename Format, typename Space>
+struct tensor_traits<Tensor<ElemType, Format, Space>> {
+  using space_type = Space;
+  using elem_type = ElemType;
+};
+
 // Tensor expression - a boost::yap's terminal of Tensor
 template <typename ElemType, typename Format, typename Space = MemSpace::GM>
 constexpr auto TensorExpr(ElemType *addr, Format const &format,
@@ -188,14 +200,5 @@ constexpr auto TensorExpr(ElemType *addr, Format const &format,
   auto tensor = Tensor<ElemType, Format, Space>(addr, format);
   return boost::yap::make_terminal(std::move(tensor));
 }
-
-template <typename T>
-struct tensor_traits;
-
-template <typename ElemType, typename Format, typename Space>
-struct tensor_traits<Tensor<ElemType, Format, Space>> {
-  using space_type = Space;
-  using elem_type = ElemType;
-};
 
 }  // namespace mt
