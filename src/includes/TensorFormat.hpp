@@ -7,6 +7,8 @@
 #include "TensorLayout.hpp"
 #include "Utils.hpp"
 
+namespace mt {
+
 struct tensor_format_tag;
 
 // Shape represents a logical shape. E.g. a fractal tensor may have a
@@ -74,3 +76,5 @@ struct format_traits<TensorFormat<Shape, Layout, LayoutProvider>> {
   using layout_type = Layout;
   using layout_provider_type = LayoutProvider;
 };
+
+}  // namespace mt

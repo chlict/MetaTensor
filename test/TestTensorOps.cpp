@@ -4,6 +4,8 @@
 // #include "backend/x86/x86_unary.hpp"
 #include "gtest/gtest.h"
 
+using namespace mt;
+
 void Tester1() {
   auto format1 = make_format(Dims(2_c, 4_c), RowMajorLayout());
   auto tensor1 = Tensor((float *)0x1000, format1);

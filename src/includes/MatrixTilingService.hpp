@@ -5,6 +5,8 @@
 #include "AbstractTilingService.hpp"
 #include "TRange.hpp"
 
+namespace mt {
+
 template <typename TRangeRow, typename TRangeCol>
 struct RowMajorTilingService
     : AbstractTilingService<RowMajorTilingService<TRangeRow, TRangeCol> > {
@@ -82,3 +84,5 @@ struct RowMajorTilingService
     return os;
   }
 };
+
+}  // namespace mt

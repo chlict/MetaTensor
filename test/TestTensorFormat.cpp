@@ -4,6 +4,8 @@
 #include "TensorFormat.hpp"
 #include "gtest/gtest.h"
 
+using namespace mt;
+
 struct CustomLayout : AbstractLayoutProvider<CustomLayout> {
   template <typename Shape>
   constexpr auto operator()(Shape&& shape) const {

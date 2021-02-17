@@ -4,6 +4,8 @@
 
 #include "Tensor.hpp"
 
+namespace mt {
+
 // Implement tensor operations on host
 namespace arch {
 struct Host;
@@ -163,3 +165,5 @@ constexpr auto tadd1(Tensor1 &&tensor1, Tensor2 &&tensor2) {
   printf("tadd1(tensor %lu, tensor %lu)\n", dimensions1.nDims,
          dimensions2.nDims);
 }
+
+}  // namespace mt

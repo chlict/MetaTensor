@@ -8,6 +8,8 @@
 #include <cstdlib>
 #include <typeinfo>
 
+namespace mt {
+
 namespace hana = boost::hana;
 
 // Usage:
@@ -91,3 +93,5 @@ constexpr bool is_yap_expr_type = boost::yap::is_expr<T>::value;
 auto int_ceil = [](auto &&a, auto &&b) {
   return (a % b) == 0 ? (a / b) : (a / b) + 1;
 };
+
+}  // namespace mt

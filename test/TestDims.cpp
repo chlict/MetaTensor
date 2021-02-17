@@ -4,6 +4,8 @@
 #include "boost/hana.hpp"
 #include "gtest/gtest.h"
 
+using namespace mt;
+
 TEST(TestDims, Test1) {
   auto dims = Dims(1, 2, 3);
   static_assert(dims.nDims == 3);

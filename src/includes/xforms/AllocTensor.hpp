@@ -11,6 +11,8 @@
 #include "xforms/Placeholder.hpp"
 #include "xforms/PrintIR.hpp"
 
+namespace mt {
+
 /**
  * Given a list of IR, this transform allocates new tensors and replace the
  * placeholders with tensors. A list of IR given as: _1 = a * b _2 = _1 + c
@@ -191,3 +193,5 @@ struct AllocTensor : StaticTransform {
 //        return yap::transform(ir, SubstituteXform{map});
 //    });
 //}
+
+}  // namespace mt

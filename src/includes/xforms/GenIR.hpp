@@ -9,6 +9,8 @@
 #include "Placeholder.hpp"
 #include "xforms/XformUtils.hpp"
 
+namespace mt {
+
 template <typename Sequence, typename Stack, long long I = 1>
 struct GenIRXform {
   Sequence mIRList;
@@ -94,3 +96,5 @@ struct GenIR : StaticTransform {
     return gen.mIRList;
   }
 };
+
+}  // namespace mt

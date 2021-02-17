@@ -5,6 +5,8 @@
 #include "VectorFormat.hpp"
 #include "gtest/gtest.h"
 
+using namespace mt;
+
 // Zero-cost expected
 TEST(TestTilingService, Test1) {
   auto format = make_format(Dim1(10_c), VectorLayout());

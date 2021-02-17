@@ -2,6 +2,8 @@
 #include "TensorLayout.hpp"
 #include "gtest/gtest.h"
 
+using namespace mt;
+
 TEST(TestLayout, Test1) {
   auto layout = TensorLayout(Dims(2_c), Dims(1_c));
 

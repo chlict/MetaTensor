@@ -6,6 +6,8 @@
 #include "VectorFormat.hpp"
 #include "gtest/gtest.h"
 
+using namespace mt;
+
 TEST(TestTiling, Test1) {
   auto range1 = TRange(0_c, 4_c, 2_c, 1_c);
   // std::cout << range1 << std::endl;

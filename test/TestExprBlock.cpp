@@ -2,6 +2,8 @@
 #include "gtest/gtest.h"
 using namespace boost::yap::literals;
 
+using namespace mt;
+
 TEST(TestExprList, Test1) {
   auto list1 = ExprBlock{1_p + 2_p, 2_p * 3_p};
   std::cout << list1 << std::endl;

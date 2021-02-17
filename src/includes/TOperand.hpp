@@ -3,6 +3,8 @@
 #include "Tensor.hpp"
 #include "TilingService.hpp"
 
+namespace mt {
+
 struct toperand_tag;
 
 template <typename T>
@@ -54,3 +56,5 @@ struct TOperand {
     return os;
   }
 };
+
+}  // namespace mt

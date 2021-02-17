@@ -2,6 +2,8 @@
 
 #include "Dims.hpp"
 
+namespace mt {
+
 struct tensor_layout_tag;
 
 template <typename T>
@@ -31,3 +33,5 @@ struct TensorLayout {
 
   constexpr auto strides() const { return strides_; }
 };
+
+}  // namespace mt

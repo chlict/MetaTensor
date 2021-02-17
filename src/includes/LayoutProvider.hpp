@@ -3,6 +3,8 @@
 #include "Dims.hpp"
 #include "TensorLayout.hpp"
 
+namespace mt {
+
 // Use the CRTP trick to do static polymorphism. Each layout type should inherit
 // this struct and provide methods to do the actual layout.
 struct layout_provider_tag {};
@@ -44,3 +46,5 @@ struct AbstractLayoutProvider {
                       hana::plus);
   }
 };
+
+}  // namespace mt

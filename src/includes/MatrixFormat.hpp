@@ -2,6 +2,8 @@
 #include "LayoutProvider.hpp"
 #include "Literals.hpp"
 
+namespace mt {
+
 // Do layout for row-major stored matrix
 struct RowMajorLayout : AbstractLayoutProvider<RowMajorLayout> {
   // Given a 2 x 4 matrix:
@@ -55,3 +57,5 @@ struct ColMajorLayout : AbstractLayoutProvider<ColMajorLayout> {
     return Dims(1_c, shape.dim[0_c]);
   }
 };
+
+}  // namespace mt

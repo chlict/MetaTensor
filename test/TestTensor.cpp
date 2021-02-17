@@ -4,6 +4,8 @@
 #include "Tensor.hpp"
 #include "gtest/gtest.h"
 
+using namespace mt;
+
 TEST(TestTensor, Test1) {
   auto format1 = make_format(Dims(2, 4), RowMajorLayout());
   {

@@ -5,6 +5,8 @@
 #include "TOperator.hpp"
 #include "gtest/gtest.h"
 
+using namespace mt;
+
 TEST(TestOperator, Test1) {
   auto format1 = make_format(Dims(2, 4), RowMajorLayout());
   auto tensor1 = Tensor((float *)0x10, format1);

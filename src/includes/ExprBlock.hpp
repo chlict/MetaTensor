@@ -9,6 +9,8 @@
 #include "xforms/AllocTensor.hpp"
 #include "xforms/CodeGen.hpp"
 
+namespace mt {
+
 // Expression block representing a sequence of expressions, like a compound
 // statement: ExprBlock {
 //     expr1,
@@ -90,3 +92,5 @@ struct ExprBlock {
     return codes;
   }
 };
+
+}  // namespace mt

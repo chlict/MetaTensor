@@ -5,6 +5,8 @@
 #include "xforms/CodeGen.hpp"
 #include "xforms/GenIR.hpp"
 
+using namespace mt;
+
 struct TestCodeGen : public ::testing::Test {
  private:
   // Some runtime values

@@ -8,6 +8,8 @@
 #include "Tensor.hpp"
 #include "TilingService.hpp"
 
+namespace mt {
+
 struct toperator_tag;
 
 template <typename T>
@@ -111,3 +113,5 @@ struct TOperator {
     return codes;
   }
 };
+
+}  // namespace mt

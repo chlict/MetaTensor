@@ -4,6 +4,8 @@
 
 #include "Utils.hpp"
 
+namespace mt {
+
 struct dims_tag;
 
 template <typename T>
@@ -59,3 +61,5 @@ constexpr auto Dim5(D0 d0, D1 d1, D2 d2, D3 d3, D4 d4) {
                 is_integral_or_constant<D4>);
   return Dims(d0, d1, d2, d3, d4);
 }
+
+}  // namespace mt

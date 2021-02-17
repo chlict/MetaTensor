@@ -3,6 +3,8 @@
 #include "Tensor.hpp"
 #include "Utils.hpp"
 
+namespace mt {
+
 struct tiling_service_tag;
 
 template <typename T>
@@ -32,3 +34,5 @@ struct AbstractTilingService {
     return service->gen_tile_shape();
   }
 };
+
+}  // namespace mt

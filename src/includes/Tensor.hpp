@@ -7,6 +7,8 @@
 #include "TensorFormat.hpp"
 #include "Utils.hpp"
 
+namespace mt {
+
 struct mem_space_tag;
 
 struct MemSpace {
@@ -195,3 +197,5 @@ struct tensor_traits<Tensor<ElemType, Format, Space>> {
   using space_type = Space;
   using elem_type = ElemType;
 };
+
+}  // namespace mt

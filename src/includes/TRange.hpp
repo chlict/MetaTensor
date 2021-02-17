@@ -4,6 +4,8 @@
 
 struct trange_tag;
 
+namespace mt {
+
 // A range is made up with [begin, end, step, size]. It describes how to tile a
 // dimension of a tensor, e.g, for a 1D tensor of which length is 6, say (a0,
 // a1, a2, a3, a4, a5), a tile range of [0, 6, 3, 2] tells tiling it as tile0 =
@@ -58,3 +60,5 @@ struct TRange {
     return os;
   }
 };
+
+}  // namespace mt

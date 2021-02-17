@@ -9,6 +9,8 @@
 #include "xforms/GenIR.hpp"
 #include "xforms/XformUtils.hpp"
 
+namespace mt {
+
 struct ecompiler_tag;
 
 template <typename T>
@@ -51,3 +53,5 @@ struct ECompiler {
     return codes;
   }
 };
+
+}  // namespace mt

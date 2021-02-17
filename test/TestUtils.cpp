@@ -2,6 +2,8 @@
 #include "TensorFormat.hpp"
 #include "gtest/gtest.h"
 
+using namespace mt;
+
 TEST(TestUtils, Test1) {
   auto dim2 = Dims(2, 4);
   auto format = make_format(dim2, RowMajorLayout());

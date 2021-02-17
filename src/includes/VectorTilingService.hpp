@@ -5,6 +5,8 @@
 #include "TRange.hpp"
 #include "TilingService.hpp"
 
+namespace mt {
+
 template <typename TRange>
 struct VectorTilingService
     : AbstractTilingService<VectorTilingService<TRange> > {
@@ -60,3 +62,5 @@ struct VectorTilingService
     return os;
   }
 };
+
+}  // namespace mt

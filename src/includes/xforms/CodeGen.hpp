@@ -12,6 +12,8 @@
 #include "xforms/Placeholder.hpp"
 #include "xforms/PrintIR.hpp"
 
+namespace mt {
+
 struct CodeGenXform {
   // Gen code for dest = src1 op src2
   template <yap::expr_kind BinaryOP, typename Dest, typename Src1,
@@ -83,3 +85,5 @@ auto execute = [](auto &&codes) { codes(); };
 
 // For debug
 auto stub_codelet = []() { printf("Stub executed\n"); };
+
+}  // namespace mt

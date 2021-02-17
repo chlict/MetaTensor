@@ -9,6 +9,8 @@
 #include "TRange.hpp"
 #include "Utils.hpp"
 
+namespace mt {
+
 struct ttiling_tag;
 
 // Describes how to tile a (multi-dimensional) tensor. Orders give the dimension
@@ -91,3 +93,5 @@ constexpr auto Tiling2DColMajor(RangeRow &&range_row, RangeCol &&range_col) {
   return TTiling(Dims(1_c, 0_c), std::forward<RangeRow>(range_row),
                  std::forward<RangeCol>(range_col));
 }
+
+}  // namespace mt

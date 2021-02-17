@@ -5,6 +5,8 @@
 #include "Utils.hpp"
 #include "xforms/PrintIR.hpp"
 
+namespace mt {
+
 namespace yap = boost::yap;
 namespace hana = boost::hana;
 
@@ -70,3 +72,5 @@ constexpr auto print_ir_list_simple(IRList &&irlist) {
   hana::for_each(irlist,
                  [](auto &&ir) { boost::yap2::print_ir(std::cout, ir); });
 }
+
+}  // namespace mt

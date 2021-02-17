@@ -3,6 +3,8 @@
 #include "xforms/AllocTensor.hpp"
 #include "xforms/GenIR.hpp"
 
+using namespace mt;
+
 TEST(TestAllocTensor, Test1) {
   auto format1 = make_format(Dim2(2_c, 4_c), RowMajorLayout());
   auto tensor1 = Tensor((float *)0x10, format1);

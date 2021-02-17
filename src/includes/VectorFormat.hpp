@@ -2,6 +2,8 @@
 #include "LayoutProvider.hpp"
 #include "Literals.hpp"
 
+namespace mt {
+
 struct VectorLayout : AbstractLayoutProvider<VectorLayout> {
   // Given a length N vector:
   // view:           [N]
@@ -28,3 +30,5 @@ struct VectorLayout : AbstractLayoutProvider<VectorLayout> {
     return Dims(1_c);
   }
 };
+
+}  // namespace mt

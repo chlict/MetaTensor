@@ -4,6 +4,8 @@
 #include "Utils.hpp"
 #include "gtest/gtest.h"
 
+using namespace mt;
+
 TEST(TestLiterals, Test1) {
   auto x = 1_c;
   std::cout << x << std::endl;

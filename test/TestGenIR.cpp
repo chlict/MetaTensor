@@ -2,6 +2,8 @@
 #include "gtest/gtest.h"
 #include "xforms/GenIR.hpp"
 
+using namespace mt;
+
 std::array<double, 8> data1, data2, data3;
 auto format1 = make_format(Dim2(2_c, 4_c), RowMajorLayout());
 auto tensor1 = Tensor(data1.data(), format1);
