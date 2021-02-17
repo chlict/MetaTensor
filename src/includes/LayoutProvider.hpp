@@ -13,6 +13,7 @@ template <typename Provider>
 struct AbstractLayoutProvider {
   using tag = layout_provider_tag;
 
+  // Given a view (logical shape), return a layout
   template <typename View>
   constexpr auto operator()(View &&view) const {
     const Provider *provider = static_cast<const Provider *>(this);
@@ -20,20 +21,20 @@ struct AbstractLayoutProvider {
   }
 
   template <typename View>
-  static constexpr auto view_to_shape(View &&view) {
-    return Provider::view_to_shape(view);
+  static constexpr auto view_to_dimensions(View &&view) {
+    return Provider::view_to_dimensions(std::forward<View>(view));
   }
 
-  template <typename Shape>
-  static constexpr auto shape_to_strides(Shape &&shape) {
-    return Provider::shape_to_strides(shape);
+  template <typename Dimensions>
+  static constexpr auto dimensions_to_strides(Dimensions &&dims) {
+    return Provider::dimensions_to_strides(std::forward<Dimensions>(dims));
   }
 
   template <typename Pos, typename Layout>
   static constexpr auto offset(Pos &&pos, Layout &&layout) {
     static_assert(is_dims_type<std::remove_reference_t<Pos> >);
     static_assert(is_layout_type<std::remove_reference_t<Layout> >);
-    auto dimensions = view_to_shape(std::forward<Pos>(pos));
+    auto dimensions = view_to_dimensions(std::forward<Pos>(pos));
     auto strides = layout.strides();
     // Takes RowMajorLayout for example:
     // view:         [rows: 2, cols: 4]
